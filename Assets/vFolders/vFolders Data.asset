@@ -19,6 +19,8 @@ MonoBehaviour:
     - 109ccfb08b9fd4bf5a9d8deee2ace2ed
     - 3bc89a0eb5302944391a20adb51668df
     - 79513b7a7d761be4cba15f5e65097282
+    - e28505423c43c24438fb9f11abf5349e
+    - bb340e36e913a784382d89cf0b3b2b3d
     values:
     - iconNameOrGuid: Settings Icon
       colorIndex: 10
@@ -37,6 +39,14 @@ MonoBehaviour:
       isIconRecursive: 0
       isColorRecursive: 0
     - iconNameOrGuid: cs Script Icon
+      colorIndex: 7
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: AssemblyDefinitionAsset Icon
+      colorIndex: 1
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: PhysicMaterial Icon
       colorIndex: 7
       isIconRecursive: 0
       isColorRecursive: 0
