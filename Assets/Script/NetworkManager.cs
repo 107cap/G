@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
-public class NetworkManager : MonoBehaviour
+public class NetworkManager
 {
     private static UdpClient udpClient;
     private static string serverIP = "172.16.1.217";

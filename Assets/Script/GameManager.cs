@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     bool? isVictory = null;
     DateTime raceTime;
 
-    NetworkManager networkManager;
+    NetworkManager networkManager = new NetworkManager();
 
     #region Singleton
     public static GameManager Instance;
@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] PlayerMove player;
 
-    // Update is called once per frame
     void Update()
     {
         if (player != null)

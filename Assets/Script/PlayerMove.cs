@@ -31,7 +31,7 @@ public class PlayerMove : MonoBehaviour
         Move();
         nowVelocity = GetComponent<Transform>().position;
 
-        playerPacket.SetValue(nowVelocity);
+        playerPacket.SetValue((nowVelocity.x, nowVelocity.y, nowVelocity.z));
     }
 
     private void Move()

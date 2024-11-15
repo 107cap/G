@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerPacket : Packet<Vector3> 
+public class PlayerPacket : Packet<(float, float, float)> 
 {
     public PlayerPacket()
     {
         type = PacketType.PLAYER;
-        SetValue(Vector3.zero);
+        SetValue((0, 0, 0));
     }
 }
