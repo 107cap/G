@@ -17,29 +17,32 @@ public class NetworkManager
     public ConcurrentQueue<byte[]> sendQue = new ConcurrentQueue<byte[]>();
     public ConcurrentQueue<byte[]> receiveQue = new ConcurrentQueue<byte[]>();
 
-    void Awake()
+    public NetworkManager()
     {
-        udpClient = new UdpClient(localPort);
-        
-    }
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
+        udpClient = new UdpClient();
     }
 
     // deque 시켜서 send만 clinet->server
-    public async Task Send()
+    public async Task SendAsync()
     {
         byte[] buff = null;
         sendQue.TryDequeue(out buff);
         IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
         //byte[] messageBytes = Encoding.UTF8.GetBytes(message);
         await udpClient.SendAsync(buff, buff.Length, serverEndPoint);
+    }
+
+    public void Send()
+    {
+        byte[] buff = null;
+        sendQue.TryDequeue(out buff);
+        if (buff != null)
+        {
+            IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
+            //byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+            udpClient.Send(buff, buff.Length, serverEndPoint);
+        }
+        
     }
     
     // 받은 애 enque만 server->client

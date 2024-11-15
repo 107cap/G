@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (player != null)
+        {
             networkManager.sendQue.Enqueue(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(player.playerPacket.GetValue())));
+            networkManager.Send();
+        }
     }
 }
