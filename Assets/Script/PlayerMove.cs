@@ -1,24 +1,28 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class PlayerMove : MonoBehaviour
-{
-    public int id;
-    public float maxSpeed;
-    public float minSpeed;
+{ 
+
+    [SerializeField] int id;
+    [SerializeField] float maxSpeed;
+    [SerializeField] float minSpeed;
 
     Rigidbody m_Rigidbody;
+    Vector3 nowVelocity;
 
-    public Vector3 nowVelocity;
+    //TODO - 서버와 연결 테스트 후 캡슐화하기
+    public PlayerPacket playerPacket;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        maxSpeed = 10f;
-        minSpeed = 5f;
         m_Rigidbody = GetComponent<Rigidbody>();
         nowVelocity = GetComponent<Transform>().position;
+
+        playerPacket = new PlayerPacket();
     }
 
     // Update is called once per frame
@@ -26,6 +30,8 @@ public class PlayerMove : MonoBehaviour
     {
         Move();
         nowVelocity = GetComponent<Transform>().position;
+
+        playerPacket.SetValue(nowVelocity);
     }
 
     private void Move()
@@ -53,6 +59,20 @@ public class PlayerMove : MonoBehaviour
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized * minSpeed * Time.deltaTime;
 
         transform.Translate(movement, Space.World);
-
     }
+
+    //public string IPacketHandler.Serialize(Packet _packet)
+    //{
+    //    throw new System.NotImplementedException();
+    //}
+
+    //Packet IPacketHandler.Deserialize(string data)
+    //{
+    //    throw new System.NotImplementedException();
+    //}
+
+    //void IPacketHandler.Process()
+    //{
+    //    throw new System.NotImplementedException();
+    //}
 }
