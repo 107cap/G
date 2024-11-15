@@ -1,12 +1,16 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     bool? isVictory = null;
     DateTime raceTime;
+
+    NetworkManager networkManager;
 
     #region Singleton
     public static GameManager Instance;
@@ -28,7 +32,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player != null)
-            Debug.Log(player.playerPacket.GetValue());
+        if (player != null)
+            networkManager.sendQue.Enqueue(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(player.playerPacket.GetValue())));
     }
 }
