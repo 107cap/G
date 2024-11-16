@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float minSpeed;
 
     Rigidbody m_Rigidbody;
+    Vector3 movement;
     //Vector3 nextPosition;
 
     IPacket packet;
@@ -47,7 +48,7 @@ public class PlayerMove : MonoBehaviour
         //입력에 의한 추가 이동
         Move();
 
-        playerPacket.SetPosition(transform.position);
+        playerPacket.SetPosition(transform.position + movement);
     }
 
     private void Move()
@@ -72,9 +73,9 @@ public class PlayerMove : MonoBehaviour
             moveHorizontal += 1.0f;
         }
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized * minSpeed * Time.deltaTime;
+        movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized * minSpeed * Time.deltaTime;
 
-        transform.Translate(movement, Space.World);
+        //transform.Translate(movement, Space.World);
     }
 
     //public string IPacketHandler.Serialize(Packet _packet)
