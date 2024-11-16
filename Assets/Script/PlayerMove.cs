@@ -12,7 +12,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float minSpeed;
 
     Rigidbody m_Rigidbody;
-    Vector3 nextPosition;
+    //Vector3 nextPosition;
 
     IPacket packet;
     //TODO - 서버와 연결 테스트 후 캡슐화하기
@@ -28,25 +28,23 @@ public class PlayerMove : MonoBehaviour
         //Debug.Log("Awake : " + packet);
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void PlayerUpdate()
     {
-        
+        //서버 값으로 이동
         GameManager.Instance.networkManager.receiveQue.TryDequeue(out packet);
         if (packet != null)
         {
             PlayerPacket playerPacket = packet as PlayerPacket;
             //Debug.Log(playerPacket);
-            nextPosition = playerPacket.GetPosition2Vec3();
+            transform.position = playerPacket.GetPosition2Vec3();
         }
         //Debug.Log(packet);
-        Debug.Log(nextPosition + "클라 nextPosition -> 다음 좌표");
+        //Debug.Log(nextPosition + "클라 nextPosition -> 다음 좌표");
         //playerPacket.SetPosition((nowVelocity.x, nowVelocity.y, nowVelocity.z));
-    }
 
-    private void FixedUpdate()
-    {
-        transform.position = nextPosition;
+
+        //입력에 의한 추가 이동
         Move();
 
         playerPacket.SetPosition(transform.position);

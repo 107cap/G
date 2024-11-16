@@ -65,7 +65,7 @@ public class NetworkManager
         }
         catch (Exception ex)
         {
-            Debug.LogError("Error Receive");
+            Debug.LogError(ex);
         }
 
     }

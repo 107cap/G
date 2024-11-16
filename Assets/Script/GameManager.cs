@@ -39,9 +39,18 @@ public class GameManager : MonoBehaviour
         if (player != null)
         {
             Debug.Log(player.playerPacket.GetPosition2Vec3());
+            networkManager.Receive();
+
+            //받은 값 -> 플레이어 값 적용
+            player.PlayerUpdate();
+
+            //이동된 플레이어값 받기
+
+            //서버로 해당 값 전달
+
+
             networkManager.sendQue.Enqueue(player.playerPacket);
             networkManager.Send();
-            networkManager.Receive();
         }
     }
 }
