@@ -4,9 +4,9 @@ using UnityEngine;
 public class PlayerPacket : IPacket 
 {
     public PacketType type { get => PacketType.PLAYER; }
-    float x;
-    float y;
-    float z;
+    public float x;
+    public float y;
+    public float z;
 
     public (float, float, float) GetPosition() => (x, y, z);
     public Vector3 GetPosition2Vec3() => new Vector3(x, y, z);

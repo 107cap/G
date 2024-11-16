@@ -39,12 +39,17 @@ public class NetworkManager
     {
         IPacket packet = null;
         sendQue.TryDequeue(out packet);
-        //PlayerPacket pac = packet as PlayerPacket;
-        //Debug.Log(pac.GetPosition2Vec3());
+        
         if (packet != null)
         {
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
-            byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
+            PlayerPacket pac = packet as PlayerPacket;
+            //Debug.Log(pac.GetPosition2Vec3());
+            byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
+            string abc = JsonConvert.SerializeObject(pac);
+            //string abc = Encoding.UTF8.GetString(buff);
+            //Debug.Log(abc);
+            //Debug.Log(pac);
             //byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             udpClient.Send(buff, buff.Length, serverEndPoint);
         }
@@ -78,10 +83,13 @@ public class NetworkManager
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
             byte[] buff = udpClient.Receive(ref serverEndPoint);
             string receivedData = Encoding.UTF8.GetString(buff);
+            
 
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(receivedData);
             if (packet != null)
             {
+                PlayerPacket pac = packet as PlayerPacket;
+                Debug.Log(pac.GetPosition() + "receive");
                 receiveQue.Enqueue(packet);
                 //Debug.Log("Packet received and enqueued.");
             }

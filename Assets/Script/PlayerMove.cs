@@ -37,8 +37,8 @@ public class PlayerMove : MonoBehaviour
         if (packet != null)
         {
             PlayerPacket playerPacket = packet as PlayerPacket;
-            //Debug.Log(playerPacket);
-            transform.position = playerPacket.GetPosition2Vec3();
+            Debug.Log(playerPacket.GetPosition2Vec3() + " PlayerMove");
+            transform.position += playerPacket.GetPosition2Vec3();
         }
         //Debug.Log(packet);
         //Debug.Log(nextPosition + "클라 nextPosition -> 다음 좌표");
@@ -48,7 +48,8 @@ public class PlayerMove : MonoBehaviour
         //입력에 의한 추가 이동
         Move();
 
-        playerPacket.SetPosition(transform.position + movement);
+        playerPacket.SetPosition(movement);
+
     }
 
     private void Move()
@@ -73,7 +74,7 @@ public class PlayerMove : MonoBehaviour
             moveHorizontal += 1.0f;
         }
 
-        movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized * minSpeed * Time.deltaTime;
+        movement = new Vector3(moveHorizontal, 0.0f, moveVertical);//.normalized * minSpeed * Time.deltaTime;
 
         //transform.Translate(movement, Space.World);
     }

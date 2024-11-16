@@ -50,13 +50,14 @@ public class Server : MonoBehaviour
     void Update()
     {
         Receive();
+        
     }
 
     IEnumerator TempThread()
     {
         while (true)
         {
-            yield return new WaitForSecondsRealtime(0.2f);
+            yield return new WaitForSecondsRealtime(0.01f);
             flush();
         }
     }
@@ -89,8 +90,6 @@ public class Server : MonoBehaviour
             else
             {
                 receiveQue.Enqueue(packet); // 패킷 que에 넣기
-                //PlayerPacket pac = packet as PlayerPacket;
-                //Debug.Log(pac.GetPosition2Vec3());
 
             }
 
@@ -102,7 +101,7 @@ public class Server : MonoBehaviour
 
     void flush()
     {
-        while(receiveQue.Count > 0 ) 
+        for (int i = receiveQue.Count; i > 0; i--) 
         {
             IPacket packet = null;
             receiveQue.TryDequeue(out packet);
@@ -117,6 +116,8 @@ public class Server : MonoBehaviour
         }
     }
 
+    //void send()
+
     int Process(ref IPacket packet)
     {
         // 패킷 처리
@@ -124,7 +125,7 @@ public class Server : MonoBehaviour
         {
             PlayerPacket pac = packet as PlayerPacket;
             //Debug.Log((pac.GetPosition2Vec3()));
-            pac.SetPosition(pac.GetPosition2Vec3() + new Vector3(0.0001f,0.0f,0.0f));
+            pac.SetPosition(pac.GetPosition2Vec3());
             packet = (IPacket)pac;
         }
 

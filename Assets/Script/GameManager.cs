@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -38,19 +39,27 @@ public class GameManager : MonoBehaviour
     {
         if (player != null)
         {
-            Debug.Log(player.playerPacket.GetPosition2Vec3());
-            networkManager.Receive();
+
+            GameManager.Instance.networkManager.Receive();
+
+            player.PlayerUpdate();
+
+            networkManager.sendQue.Enqueue(player.playerPacket);
+         
+
+            Debug.Log(player.playerPacket.GetPosition() + "enque 뒤");
+            networkManager.Send();
+
+            
+
 
             //받은 값 -> 플레이어 값 적용
-            player.PlayerUpdate();
 
             //이동된 플레이어값 받기
 
             //서버로 해당 값 전달
 
 
-            networkManager.sendQue.Enqueue(player.playerPacket);
-            networkManager.Send();
         }
     }
 }
