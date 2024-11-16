@@ -1,13 +1,17 @@
-using Newtonsoft.Json;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class PlayerPacket : Packet<(float, float, float)> 
+public class PlayerPacket : IPacket 
 {
-    public PlayerPacket()
+    public PacketType type { get => PacketType.PLAYER; }
+    float x;
+    float y;
+    float z;
+
+    public (float, float, float) GetPosition() => (x, y, z);
+
+    public void SetPosition((float, float, float) value)
     {
-        type = PacketType.PLAYER;
-        SetValue((0, 0, 0));
+        (x, y, z) = value;
     }
 }
