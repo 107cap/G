@@ -17,7 +17,7 @@ public class Server : MonoBehaviour
     
     private static Dictionary<int, IPEndPoint> connectedClients = new Dictionary<int, IPEndPoint>();
     //ConcurrentQueue<byte[]> sendQue = new ConcurrentQueue<byte[]>();
-    ConcurrentQueue<byte[]> receiveQue = new ConcurrentQueue<byte[]>();
+    ConcurrentQueue<IPacket> receiveQue = new ConcurrentQueue<IPacket>();
     int ClientNum = 0;
     int receiveClientNum = 0;
     DateTime raceTime;
@@ -79,6 +79,7 @@ public class Server : MonoBehaviour
         if (udpServer.Available > 0)
         {
             byte[] receivedBuff = udpServer.Receive(ref clientEndPoint);
+            IPacket packet = JsonConvert.DeserializeObject<IPacket>(Encoding.UTF8.GetString(receivedBuff));
             if (!connectedClients.ContainsValue(clientEndPoint))
             {
                 //처음 접속 처리
@@ -87,7 +88,10 @@ public class Server : MonoBehaviour
             // else로 처음 안왔을떄만 처리?
             else
             {
-                receiveQue.Enqueue(receivedBuff); // 패킷 que에 넣기
+                receiveQue.Enqueue(packet); // 패킷 que에 넣기
+                //PlayerPacket pac = packet as PlayerPacket;
+                //Debug.Log(pac.GetPosition2Vec3());
+
             }
 
             
@@ -100,19 +104,32 @@ public class Server : MonoBehaviour
     {
         while(receiveQue.Count > 0 ) 
         {
-            byte[] buff = null;
-            receiveQue.TryDequeue(out buff);
-            Debug.Log(Encoding.UTF8.GetString(buff));
-            int clientnum = Process(buff);
+            IPacket packet = null;
+            receiveQue.TryDequeue(out packet);
+            //PlayerPacket pac = packet as PlayerPacket;
+            //Debug.Log(pac.GetPosition2Vec3());
+            //Debug.Log(Encoding.UTF8.GetString(buff));
+            int clientnum = Process(ref packet);
+            PlayerPacket pac2 = packet as PlayerPacket;
+            //Debug.Log(pac2.GetPosition() + "서버가 받은 패킷 좌표");
+            byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
             BroadCast(buff, clientnum);
         }
     }
 
-    int Process(byte[] buff)
+    int Process(ref IPacket packet)
     {
         // 패킷 처리
+        if (packet.type == PacketType.PLAYER)
+        {
+            PlayerPacket pac = packet as PlayerPacket;
+            //Debug.Log((pac.GetPosition2Vec3()));
+            pac.SetPosition(pac.GetPosition2Vec3() + new Vector3(0.0001f,0.0f,0.0f));
+            packet = (IPacket)pac;
+        }
+
         // 누구한테 온건지 확인
-        return 0; // return clientnum
+        return 655555; // return clientnum
     }
 
     void EndServer()

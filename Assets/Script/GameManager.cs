@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     bool? isVictory = null;
     DateTime raceTime;
 
-    NetworkManager networkManager = new NetworkManager();
+    public NetworkManager networkManager = new NetworkManager();
 
     #region Singleton
     public static GameManager Instance;
@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All,  // 타입 정보 포함
+        };
     }
     #endregion
 
@@ -33,8 +38,10 @@ public class GameManager : MonoBehaviour
     {
         if (player != null)
         {
-            networkManager.sendQue.Enqueue(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(player.playerPacket.GetValue())));
+            Debug.Log(player.playerPacket.GetPosition2Vec3());
+            networkManager.sendQue.Enqueue(player.playerPacket);
             networkManager.Send();
+            networkManager.Receive();
         }
     }
 }
