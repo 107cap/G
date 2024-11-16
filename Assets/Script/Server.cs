@@ -15,11 +15,11 @@ public class Server : MonoBehaviour
     private static int serverPort = 8080;
     private static UdpClient udpServer;
     
-    private static Dictionary<IPEndPoint, int> connectedClients = new Dictionary<IPEndPoint, int>();
-    ConcurrentQueue<byte[]> sendQue = new ConcurrentQueue<byte[]>();
+    private static Dictionary<int, IPEndPoint> connectedClients = new Dictionary<int, IPEndPoint>();
+    //ConcurrentQueue<byte[]> sendQue = new ConcurrentQueue<byte[]>();
     ConcurrentQueue<byte[]> receiveQue = new ConcurrentQueue<byte[]>();
-    ConcurrentQueue<IPEndPoint> receiveQue_Sender = new ConcurrentQueue<IPEndPoint>();
     int ClientNum = 0;
+    int receiveClientNum = 0;
     DateTime raceTime;
     IPEndPoint clientEndPoint;
     // 서버 딕셔너리 (recrive que 삭제)
@@ -62,13 +62,13 @@ public class Server : MonoBehaviour
     }
 
     //서버->클라(broadcast)
-    void BroadCast(byte[] packet, IPEndPoint senderEndPoint)
+    void BroadCast(byte[] packet, int senderClientNum)
     {
-        foreach (var clinet in connectedClients)
+        foreach (var client in connectedClients)
         {
-            if (!clinet.Key.Equals(senderEndPoint))
+            if (!client.Key.Equals(senderClientNum))
             {
-                udpServer.Send(packet, packet.Length, clinet.Key);
+                udpServer.Send(packet, packet.Length, client.Value);
             }
         }
     }
@@ -79,36 +79,40 @@ public class Server : MonoBehaviour
         if (udpServer.Available > 0)
         {
             byte[] receivedBuff = udpServer.Receive(ref clientEndPoint);
-            if (!connectedClients.ContainsKey(clientEndPoint))
+            if (!connectedClients.ContainsValue(clientEndPoint))
             {
-                connectedClients.Add(clientEndPoint, ClientNum++);  // 클라 번호 저장
-            }
+                //처음 접속 처리
+                connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
+            }  
+            // else로 처음 안왔을떄만 처리?
             else
             {
-                receiveQue.Enqueue(receivedBuff); // 이미 접속한 클라면 que에 넣기
-                receiveQue_Sender.Enqueue(clientEndPoint); //need fix
+                receiveQue.Enqueue(receivedBuff); // 패킷 que에 넣기
             }
+
+            
+
         }
         
     }
 
     void flush()
     {
-        for (int i = receiveQue.Count; i>0; i--)
+        while(receiveQue.Count > 0 ) 
         {
             byte[] buff = null;
-            IPEndPoint senderEndPoint = null;
             receiveQue.TryDequeue(out buff);
-            receiveQue_Sender.TryDequeue(out senderEndPoint);
-
             Debug.Log(Encoding.UTF8.GetString(buff));
-            BroadCast(buff, senderEndPoint);
+            int clientnum = Process(buff);
+            BroadCast(buff, clientnum);
         }
     }
 
-    void Process()
+    int Process(byte[] buff)
     {
-        // 패킷 검증
+        // 패킷 처리
+        // 누구한테 온건지 확인
+        return 0; // return clientnum
     }
 
     void EndServer()
