@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        eventManager.Register(EventType.ADD_PLAYER, AddPlayers(addPlayerPacket));   
+        eventManager.Register(EventType.ADD_PLAYER, () => AddPlayers(addPlayerPacket.ClientNums));   
     }
 
     public GameObject playerPrefab;

@@ -62,7 +62,7 @@ public class Server : MonoBehaviour
         }
     }
 
-    //서버->클라(broadcast)
+    //서버->클라(broadcast, 보낸 애는 받지 않음)
     void BroadCast(byte[] packet, int senderClientNum)
     {
         foreach (var client in connectedClients)
@@ -74,6 +74,16 @@ public class Server : MonoBehaviour
         }
     }
 
+    // 진짜 broadcast 
+    void BroadCast(byte[] packet)
+    {
+        foreach (var client in connectedClients)
+        {
+           udpServer.Send(packet, packet.Length, client.Value);
+        }
+    }
+    /*
+    // 해당 Client Num에만 send
     void UniCast(byte[] packet, int ClientNum)
     {
         foreach(var client in connectedClients)
@@ -84,6 +94,7 @@ public class Server : MonoBehaviour
             }
         }
     }
+    */
 
     //클라->서버 받기
     void Receive()
@@ -94,7 +105,10 @@ public class Server : MonoBehaviour
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(Encoding.UTF8.GetString(receivedBuff));
             // else로 처음 안왔을떄만 처리?
             Process(ref packet);
-            receiveQue.Enqueue(packet); // 패킷 que에 넣기
+            if (packet != null)
+            {
+                receiveQue.Enqueue(packet); // 패킷 que에 넣기
+            }
 
         }
         
@@ -107,7 +121,15 @@ public class Server : MonoBehaviour
             IPacket packet = null;
             receiveQue.TryDequeue(out packet);
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
-            BroadCast(buff, packet.ClientNum);
+            AddPlayerPacket pac = packet as AddPlayerPacket;
+            if (pac != null)
+            {
+                BroadCast(buff);
+            }
+            else
+            {
+                BroadCast(buff, packet.ClientNum);
+            }
         }
     }
 
@@ -117,10 +139,11 @@ public class Server : MonoBehaviour
     {
         if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
-            EventPacket evePacket = new EventPacket();
-            EventPacket pac = packet as EventPacket;
-
-            addPlayer(ref packet);
+            AddPlayerPacket pac = addPlayer();
+            receiveQue.Enqueue(pac);
+            // broadcast 용 패킷만들어서 enque
+            packet = null;
+            return;
         }
 
         else // 처음 접속이 아닐때
@@ -131,13 +154,44 @@ public class Server : MonoBehaviour
                 pac.SetPosition(pac.GetPosition2Vec3());
                 packet = (IPacket)pac;
             }
+
+            else if (packet.Type == PacketType.EVENT)
+            {
+                EventPacket pac = packet as EventPacket;
+                switch(pac.eventType)
+                {
+                    
+                }
+            }
         }
     }
-
-    // 처음 접속 처리
-    void addPlayer(ref IPacket packet)
+    // 클라에선 배열 있으면 만들어주고 없으면 안만듬. 이미 있어도 안만듬
+   
+    AddPlayerPacket addPlayer()
     {
-        AddPlayerPacket pac = packet as AddPlayerPacket;
+        AddPlayerPacket pac = new AddPlayerPacket();
+        pac.eventType = EventType.ADD_PLAYER;
+        pac.ClientNum = ClientNum;
+        // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
+        // 여기 왔다는 것은 broadcast할게 있다는 뜻
+        if (connectedClients.Count > 0)
+        {
+            for (int i = 0; i < ClientNum; i++)
+            {
+                pac.ClientNums[i] = i;
+            }
+        }
+
+        // 위치는 클라에서 직접 지정
+        connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
+        ClientNum++;
+
+        return pac;
+    }
+
+    AddPlayerPacket addPlayerBroadCast()
+    {
+        AddPlayerPacket pac = new AddPlayerPacket();
         pac.eventType = EventType.ADD_PLAYER;
         pac.ClientNum = ClientNum;
         // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
@@ -150,9 +204,13 @@ public class Server : MonoBehaviour
         }
 
         // 위치는 클라에서 직접 지정
+        connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
         ClientNum++;
-        packet = (IPacket)pac;
+
+        return pac;
     }
+
+
 
     void EndServer()
     {
