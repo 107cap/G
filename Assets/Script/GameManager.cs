@@ -12,12 +12,13 @@ public class GameManager : MonoBehaviour
     DateTime raceTime;
 
     public NetworkManager networkManager = new NetworkManager();
-    public EventManager eventManager = new EventManager();
+    public EventManager eventManager;
     
-    //ÆÐÅ¶ Ä³½Ì
+    //ï¿½ï¿½Å¶ Ä³ï¿½ï¿½
     IPacket tmpPacket;
+    EventPacket eventPacket;
     PlayerPacket playerPacket;
-    AddPlayerPacket addPlayerPacket;
+    //AddPlayerPacket addPlayerPacket;
 
     #region Singleton
     public static GameManager Instance;
@@ -34,14 +35,14 @@ public class GameManager : MonoBehaviour
 
         JsonConvert.DefaultSettings = () => new JsonSerializerSettings
         {
-            TypeNameHandling = TypeNameHandling.All,  // Å¸ÀÔ Á¤º¸ Æ÷ÇÔ
+            TypeNameHandling = TypeNameHandling.All,  // Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         };
     }
     #endregion
 
     private void Start()
     {
-        eventManager.Register(EventType.ADD_PLAYER, () => AddPlayers(addPlayerPacket.ClientNums));   
+        eventManager.Register(EventType.ADD_PLAYER, () => AddPlayers());   
     }
 
     public GameObject playerPrefab;
@@ -62,31 +63,34 @@ public class GameManager : MonoBehaviour
 
         networkManager.receiveQue.TryDequeue(out tmpPacket);
 
-        switch (tmpPacket.Type)
+        if (tmpPacket != null)
         {
-            case PacketType.NONE:
-                break;
-            case PacketType.PLAYER:
-                if (!playerDict.Count.Equals(0))
-                {
-                    playerPacket = (PlayerPacket)tmpPacket;
+            switch (tmpPacket.Type)
+            {
+                case PacketType.NONE:
+                    break;
+                case PacketType.PLAYER:
+                    if (!playerDict.Count.Equals(0))
+                    {
+                        playerPacket = (PlayerPacket)tmpPacket;
 
-                    //ÇÃ·¹ÀÌ¾î Update ¹× ÆÐÅ¶ ·¡ÇÎ
-                    networkManager.sendQue.Enqueue(
-                        playerDict[playerPacket.ClientNum].PlayerUpdate(playerPacket));
+                        //ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Update ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
+                        networkManager.sendQue.Enqueue(
+                            playerDict[playerPacket.ClientNum].PlayerUpdate(playerPacket));
 
-                    //Debug.Log(player.playerPacket.GetPosition() + "enque µÚ");
-                }
-                break;
-            case PacketType.EVENT:
-                eventManager.Invoke((tmpPacket as EventPacket).eventType);
-                break;
-            case PacketType.ERROR:
-                break;
-            default:
-                break;
+                        //Debug.Log(player.playerPacket.GetPosition() + "enque ï¿½ï¿½");
+                    }
+                    break;
+                case PacketType.EVENT:
+                    eventPacket = (EventPacket)tmpPacket;
+                    eventManager.Invoke(eventPacket.eventType);
+                    break;
+                case PacketType.ERROR:
+                    break;
+                default:
+                    break;
+            }
         }
-
         #endregion
 
         //Send
@@ -97,11 +101,13 @@ public class GameManager : MonoBehaviour
     /// Add Players In PlayScene
     /// </summary>
     /// <param name="clientNums"></param>
-    void AddPlayers(int[] clientNums)
+    void AddPlayers()
     {
-        for (int i = 0; i < clientNums.Length; i++)
+        AddPlayerPacket addPlayerPacket = (AddPlayerPacket)eventPacket;
+
+        for (int i = 0; i < addPlayerPacket.ClientNums.Length; i++)
         {
-            CreatePlayer(clientNums[i], sponPositions[i]);
+            CreatePlayer(addPlayerPacket.ClientNums[i], sponPositions[i]);
         }
     }
     
