@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    int selfClienNum = -1;
+    int selfClientNum = -1;
     bool? isVictory = null;
     DateTime raceTime;
 
@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     IPacket tmpPacket;
     EventPacket eventPacket;
     PlayerPacket playerPacket;
+    AddPlayerPacket testAddPacket;
     //AddPlayerPacket addPlayerPacket;
 
     #region Singleton
@@ -43,8 +44,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        eventManager.Register(EventType.ADD_PLAYER, () => AddPlayers());
-        eventManager.Register(EventType.JOIN_GAME, () => SetSelfClientNum());
+        eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); Debug.Log("AddPlayer 받았다 데스"); });
+        eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); Debug.Log("Join Game받았다 데스네"); }); 
 
         RequestJoin();
     }
@@ -67,8 +68,19 @@ public class GameManager : MonoBehaviour
 
         networkManager.receiveQue.TryDequeue(out tmpPacket);
 
+        //AddPlayerPacket pac = tmpPacket as AddPlayerPacket;
+
+        if (testAddPacket != null)
+        {
+            testAddPacket = (AddPlayerPacket)tmpPacket;
+            foreach (var item in testAddPacket.ClientNums)
+            {
+                Debug.Log("오아시스 : " + item);
+            }
+        }
         if (tmpPacket != null)
         {
+            //Debug.Log(tmpPacket.Type);
             switch (tmpPacket.Type)
             {
                 case PacketType.NONE:
@@ -79,11 +91,12 @@ public class GameManager : MonoBehaviour
                         playerPacket = (PlayerPacket)tmpPacket;
 
                         //Update other Player Position, Not send Updateed other Position
-                        if(!playerPacket.clientNum.Equals(selfClienNum))
+                        if(!playerPacket.clientNum.Equals(selfClientNum))
                             playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket);
                     }
                     break;
                 case PacketType.EVENT:
+                    //Debug.Log("스위치 작동");
                     eventPacket = (EventPacket)tmpPacket;
                     eventManager.Invoke(eventPacket.eventType);
                     break;
@@ -97,15 +110,17 @@ public class GameManager : MonoBehaviour
 
         //Send
         //본인 클라이언트의 좌표값은 항상 전송
-        if(!selfClienNum.Equals(-1))    //본인 클라이언트가 존재 시
+        if(playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
             networkManager.sendQue.Enqueue( 
-                playerDict[selfClienNum].SelfPlayerUpdate(playerPacket));
+                playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
 
         networkManager.Send();
+
+        tmpPacket = null;
     }
 
-    void SetSelfClientNum() => selfClienNum = eventPacket.clientNum;
-    public int GetSelfClientNum() => selfClienNum;
+    void SetSelfClientNum() => selfClientNum = eventPacket.clientNum;
+    public int GetSelfClientNum() => selfClientNum;
 
     /// <summary>
     /// Add Players In PlayScene
@@ -115,19 +130,28 @@ public class GameManager : MonoBehaviour
     {
         AddPlayerPacket addPlayerPacket = (AddPlayerPacket)eventPacket;
 
+        foreach (var item in addPlayerPacket.ClientNums)
+        {
+            Debug.Log("ADDPlayer.ClientNums : " + item);
+        }
+
         for (int i = 0; i < addPlayerPacket.ClientNums.Length; i++)
         {
+            Debug.Log("create 전 num값 : " + addPlayerPacket.ClientNums[i]);
             CreatePlayer(addPlayerPacket.ClientNums[i], sponPositions[i]);
         }
     }
     
     void CreatePlayer(int clientNum, Vector3 position)
     {
+        Debug.Log("createPlayer.num : " + clientNum);
+
         //Early return;
         if (playerDict.ContainsKey(clientNum))
             return;
 
         //Create Player And Add Dict
+        Debug.Log("작동 createPlayer");
         GameObject player = Instantiate(playerPrefab);
         player.transform.position = position;
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());

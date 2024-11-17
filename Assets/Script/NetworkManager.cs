@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using Newtonsoft.Json;
 
+
 public class NetworkManager
 {
     //TODO - 서버와 초기 접속이 될 시 자기 클라번호 저장해두기
@@ -45,13 +46,8 @@ public class NetworkManager
         {
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
             PlayerPacket pac = packet as PlayerPacket;
-            //Debug.Log(pac.GetPosition2Vec3());
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
             string abc = JsonConvert.SerializeObject(pac);
-            //string abc = Encoding.UTF8.GetString(buff);
-            //Debug.Log(abc);
-            //Debug.Log(pac);
-            //byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             udpClient.Send(buff, buff.Length, serverEndPoint);
         }
         
@@ -89,18 +85,13 @@ public class NetworkManager
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(receivedData);
             if (packet != null)
             {
-                //PlayerPacket pac = packet as PlayerPacket;
-                //Debug.Log(pac.GetPosition() + "receive");
                 receiveQue.Enqueue(packet);
-                //Debug.Log("Packet received and enqueued.");
             }
         }
 
     }
 
-    void Process()
-    {
-    }
+    
 
 
     

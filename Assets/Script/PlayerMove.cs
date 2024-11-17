@@ -30,6 +30,9 @@ public class PlayerMove : MonoBehaviour
     }
     public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
     {
+        if (playerPacket == null)
+            playerPacket = new PlayerPacket();
+
         if (packet != null)
         {
             if(playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())

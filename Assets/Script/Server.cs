@@ -21,7 +21,7 @@ public class Server : MonoBehaviour
     ConcurrentQueue<IPacket> receiveQue = new ConcurrentQueue<IPacket>();
     int ClientNum = 0;
     int receiveClientNum = 0;
-    DateTime raceTime;
+    float raceTime;
     IPEndPoint clientEndPoint;
     // 서버 딕셔너리 (recrive que 삭제)
 
@@ -47,6 +47,13 @@ public class Server : MonoBehaviour
     void Update()
     {
         Receive();
+        raceTime += Time.deltaTime;
+    }
+
+
+    void setraceTime()
+    {
+        // 패킷 만들어서 보내기
         
     }
 
@@ -79,7 +86,7 @@ public class Server : MonoBehaviour
            udpServer.Send(packet, packet.Length, client.Value);
         }
     }
-    /*
+    
     // 해당 Client Num에만 send
     void UniCast(byte[] packet, int ClientNum)
     {
@@ -91,7 +98,7 @@ public class Server : MonoBehaviour
             }
         }
     }
-    */
+    
 
     //클라->서버 받기
     void Receive()
@@ -119,8 +126,11 @@ public class Server : MonoBehaviour
             receiveQue.TryDequeue(out packet);
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
             BroadCast(buff);
-            
         }
+
+        setraceTime();
+
+
     }
 
     //void send()
@@ -130,8 +140,15 @@ public class Server : MonoBehaviour
         if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
             AddPlayerPacket pac = addPlayer();
+            // 처음 접속 클라 번호 넘겨주기
+            EventPacket eventPacket = new EventPacket();
+            eventPacket.clientNum = pac.ClientNum;
+            eventPacket.eventType = EventType.JOIN_GAME;
+            byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(eventPacket));
+            UniCast(buff, eventPacket.clientNum);
+
+            
             receiveQue.Enqueue(pac);
-            // broadcast 용 패킷만들어서 enque
             packet = null;
             return;
         }
@@ -206,6 +223,14 @@ public class Server : MonoBehaviour
     void DebugBroadCast()
     {
         AddPlayerPacket pac = addPlayer();
+        // 처음 접속 클라 번호 넘겨주기
+        EventPacket eventPacket = new EventPacket();
+        eventPacket.clientNum = pac.ClientNum;
+        eventPacket.eventType = EventType.JOIN_GAME;
+        byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(eventPacket));
+        
+        UniCast(buff, eventPacket.clientNum);
+
         receiveQue.Enqueue(pac);
         // broadcast 용 패킷만들어서 enque
         return;

@@ -17,7 +17,7 @@ public class EventManager : MonoBehaviour
         //TODO - Dict 값 자동 설정으로 변경
         eventDict = new Dictionary<EventType, UnityEvent>()
         {
-            //{EventType.JOIN_GAME, JoinGame },
+            {EventType.JOIN_GAME, JoinGame },
             //{EventType.EXIT_GAME, ExitGame },
             {EventType.START_RACE, StartRace },
             {EventType.END_RACE, EndRace },
