@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 
 public class NetworkManager
 {
+    //TODO - 서버와 초기 접속이 될 시 자기 클라번호 저장해두기
     private static UdpClient udpClient;
     private static string serverIP = "172.16.1.217";
     private static int serverPort = 8080;

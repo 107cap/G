@@ -30,14 +30,11 @@ public class PlayerMove : MonoBehaviour
     }
 
 
-    public void PlayerUpdate()
+    public PlayerPacket PlayerUpdate(PlayerPacket playerPacket)
     {
-        //서버 값으로 이동
-        GameManager.Instance.networkManager.receiveQue.TryDequeue(out packet);
         if (packet != null)
         {
-            PlayerPacket playerPacket = packet as PlayerPacket;
-            Debug.Log(playerPacket.GetPosition2Vec3() + " PlayerMove");
+            //Debug.Log(playerPacket.GetPosition2Vec3() + " PlayerMove");
             transform.position += playerPacket.GetPosition2Vec3();
         }
         //Debug.Log(packet);
@@ -46,10 +43,12 @@ public class PlayerMove : MonoBehaviour
 
 
         //입력에 의한 추가 이동
+        //TODO - 로컬 변수 추가
         Move();
 
         playerPacket.SetPosition(movement);
-
+        
+        return playerPacket; 
     }
 
     private void Move()

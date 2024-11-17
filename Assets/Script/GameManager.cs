@@ -12,6 +12,12 @@ public class GameManager : MonoBehaviour
     DateTime raceTime;
 
     public NetworkManager networkManager = new NetworkManager();
+    public EventManager eventManager = new EventManager();
+    
+    //패킷 캐싱
+    IPacket tmpPacket;
+    PlayerPacket playerPacket;
+    AddPlayerPacket addPlayerPacket;
 
     #region Singleton
     public static GameManager Instance;
@@ -33,33 +39,81 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    [SerializeField] PlayerMove player;
+    private void Start()
+    {
+        eventManager.Register(EventType.ADD_PLAYER, AddPlayers(addPlayerPacket));   
+    }
+
+    public GameObject playerPrefab;
+    Dictionary<int, PlayerMove> playerDict = new Dictionary<int, PlayerMove>();
+    Vector3[] sponPositions = new Vector3[] {
+        new Vector3(0f, 0f, 0f),
+        new Vector3(10f, 0f, 0f),
+        new Vector3(20f, 0f, 0f),
+        new Vector3(30f, 0f, 0f)
+    };
 
     void Update()
     {
-        if (player != null)
+        //Receive
+        networkManager.Receive();
+
+        #region Process
+
+        networkManager.receiveQue.TryDequeue(out tmpPacket);
+
+        switch (tmpPacket.Type)
         {
+            case PacketType.NONE:
+                break;
+            case PacketType.PLAYER:
+                if (!playerDict.Count.Equals(0))
+                {
+                    playerPacket = (PlayerPacket)tmpPacket;
 
-            GameManager.Instance.networkManager.Receive();
+                    //플레이어 Update 및 패킷 래핑
+                    networkManager.sendQue.Enqueue(
+                        playerDict[playerPacket.ClientNum].PlayerUpdate(playerPacket));
 
-            player.PlayerUpdate();
-
-            networkManager.sendQue.Enqueue(player.playerPacket);
-         
-
-            Debug.Log(player.playerPacket.GetPosition() + "enque 뒤");
-            networkManager.Send();
-
-            
-
-
-            //받은 값 -> 플레이어 값 적용
-
-            //이동된 플레이어값 받기
-
-            //서버로 해당 값 전달
-
-
+                    //Debug.Log(player.playerPacket.GetPosition() + "enque 뒤");
+                }
+                break;
+            case PacketType.EVENT:
+                eventManager.Invoke((tmpPacket as EventPacket).eventType);
+                break;
+            case PacketType.ERROR:
+                break;
+            default:
+                break;
         }
+
+        #endregion
+
+        //Send
+        networkManager.Send();
+    }
+
+    /// <summary>
+    /// Add Players In PlayScene
+    /// </summary>
+    /// <param name="clientNums"></param>
+    void AddPlayers(int[] clientNums)
+    {
+        for (int i = 0; i < clientNums.Length; i++)
+        {
+            CreatePlayer(clientNums[i], sponPositions[i]);
+        }
+    }
+    
+    void CreatePlayer(int clientNum, Vector3 position)
+    {
+        //Early return;
+        if (playerDict.ContainsKey(clientNum))
+            return;
+
+        //Create Player And Add Dict
+        GameObject player = Instantiate(playerPrefab);
+        player.transform.position = position;
+        playerDict.Add(clientNum, player.GetComponent<PlayerMove>());
     }
 }

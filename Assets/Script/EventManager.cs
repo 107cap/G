@@ -8,6 +8,7 @@ public class EventManager : MonoBehaviour
     [SerializeField] UnityEvent ExitGame;
     [SerializeField] UnityEvent StartRace;
     [SerializeField] UnityEvent EndRace;
+    [SerializeField] UnityEvent AddPlayer;
 
     public Dictionary<EventType, UnityEvent> eventDict;
 
@@ -19,7 +20,8 @@ public class EventManager : MonoBehaviour
             //{EventType.JOIN_GAME, JoinGame },
             //{EventType.EXIT_GAME, ExitGame },
             {EventType.START_RACE, StartRace },
-            {EventType.END_RACE, EndRace }
+            {EventType.END_RACE, EndRace },
+            {EventType.ADD_PLAYER, AddPlayer }
         };
     }
 
