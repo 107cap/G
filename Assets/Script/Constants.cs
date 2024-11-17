@@ -8,7 +8,7 @@ public static class Constants
 public enum EventType
 {
     NONE = 0,
-    //JOIN_GAME = 1, 
+    JOIN_GAME = 1, 
     //EXIT_GAME = 2,
     START_RACE = 3,
     END_RACE = 4,

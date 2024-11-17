@@ -74,6 +74,17 @@ public class Server : MonoBehaviour
         }
     }
 
+    void UniCast(byte[] packet, int ClientNum)
+    {
+        foreach(var client in connectedClients)
+        {
+            if (client.Key.Equals(ClientNum))
+            {
+                udpServer.Send(packet, packet.Length, client.Value);
+            }
+        }
+    }
+
     //클라->서버 받기
     void Receive()
     {
@@ -81,19 +92,9 @@ public class Server : MonoBehaviour
         {
             byte[] receivedBuff = udpServer.Receive(ref clientEndPoint);
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(Encoding.UTF8.GetString(receivedBuff));
-            if (!connectedClients.ContainsValue(clientEndPoint))
-            {
-                //처음 접속 처리
-                connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
-            }  
             // else로 처음 안왔을떄만 처리?
-            else
-            {
-                receiveQue.Enqueue(packet); // 패킷 que에 넣기
-
-            }
-
-            
+            Process(ref packet);
+            receiveQue.Enqueue(packet); // 패킷 que에 넣기
 
         }
         
@@ -105,32 +106,52 @@ public class Server : MonoBehaviour
         {
             IPacket packet = null;
             receiveQue.TryDequeue(out packet);
-            //PlayerPacket pac = packet as PlayerPacket;
-            //Debug.Log(pac.GetPosition2Vec3());
-            //Debug.Log(Encoding.UTF8.GetString(buff));
-            int clientnum = Process(ref packet);
-            PlayerPacket pac2 = packet as PlayerPacket;
-            //Debug.Log(pac2.GetPosition() + "서버가 받은 패킷 좌표");
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
-            BroadCast(buff, clientnum);
+            BroadCast(buff, packet.ClientNum);
         }
     }
 
     //void send()
 
-    int Process(ref IPacket packet)
+    void Process(ref IPacket packet)
     {
-        // 패킷 처리
-        if (packet.Type == PacketType.PLAYER)
+        if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
-            PlayerPacket pac = packet as PlayerPacket;
-            //Debug.Log((pac.GetPosition2Vec3()));
-            pac.SetPosition(pac.GetPosition2Vec3());
-            packet = (IPacket)pac;
+            EventPacket evePacket = new EventPacket();
+            EventPacket pac = packet as EventPacket;
+
+            addPlayer(ref packet);
         }
 
-        // 누구한테 온건지 확인
-        return 655555; // return clientnum
+        else // 처음 접속이 아닐때
+        {
+            if (packet.Type == PacketType.PLAYER)
+            {
+                PlayerPacket pac = packet as PlayerPacket;
+                pac.SetPosition(pac.GetPosition2Vec3());
+                packet = (IPacket)pac;
+            }
+        }
+    }
+
+    // 처음 접속 처리
+    void addPlayer(ref IPacket packet)
+    {
+        AddPlayerPacket pac = packet as AddPlayerPacket;
+        pac.eventType = EventType.ADD_PLAYER;
+        pac.ClientNum = ClientNum;
+        // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
+        if (connectedClients.Count > 0)
+        {
+            for (int i = 0; i < ClientNum; i++)
+            {
+                pac.ClientNums[i] = i;
+            }
+        }
+
+        // 위치는 클라에서 직접 지정
+        ClientNum++;
+        packet = (IPacket)pac;
     }
 
     void EndServer()
