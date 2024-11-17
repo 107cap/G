@@ -3,7 +3,13 @@ using UnityEngine;
 
 public class PlayerPacket : IPacket 
 {
-    public PacketType type { get => PacketType.PLAYER; }
+    public PacketType Type { get => PacketType.PLAYER; }
+    public int clientNum;
+    public int ClientNum
+    {
+        get => clientNum;
+        set => clientNum = value;
+    }
     public float x;
     public float y;
     public float z;

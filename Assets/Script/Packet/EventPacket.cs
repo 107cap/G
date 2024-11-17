@@ -4,8 +4,21 @@ using UnityEngine;
 
 public class EventPacket : IPacket
 {
-    public PacketType type { get => PacketType.EVENT; }
+    public PacketType Type { get => PacketType.EVENT; }
+    public int clientNum;
+    public int ClientNum
+    {
+        get => clientNum;
+        set => clientNum = value;
+    }
 
+    public EventType eventType;
+
+    public void EventType(EventType _eventType)
+    {
+        eventType = _eventType; 
+    }
+}
     //T IPacket.GetValue<T>()
     //{
     //    throw new System.NotImplementedException();
@@ -15,4 +28,3 @@ public class EventPacket : IPacket
     //{
     //    throw new System.NotImplementedException();
     //}
-}

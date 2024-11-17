@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,4 +22,10 @@ public class EventManager : MonoBehaviour
             {EventType.END_RACE, EndRace }
         };
     }
+
+    public void Register(EventType type, UnityAction listener) => eventDict[type].AddListener(listener);
+
+    public void UnRegister(EventType type, UnityAction listener) => eventDict[type].RemoveListener(listener);
+
+    public void Invoke(EventType type) => eventDict[type].Invoke();
 }

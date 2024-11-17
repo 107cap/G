@@ -121,7 +121,7 @@ public class Server : MonoBehaviour
     int Process(ref IPacket packet)
     {
         // 패킷 처리
-        if (packet.type == PacketType.PLAYER)
+        if (packet.Type == PacketType.PLAYER)
         {
             PlayerPacket pac = packet as PlayerPacket;
             //Debug.Log((pac.GetPosition2Vec3()));
