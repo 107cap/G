@@ -121,15 +121,8 @@ public class Server : MonoBehaviour
             IPacket packet = null;
             receiveQue.TryDequeue(out packet);
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
-            AddPlayerPacket pac = packet as AddPlayerPacket;
-            if (pac != null)
-            {
-                BroadCast(buff);
-            }
-            else
-            {
-                BroadCast(buff, packet.ClientNum);
-            }
+            BroadCast(buff);
+            
         }
     }
 
@@ -188,28 +181,6 @@ public class Server : MonoBehaviour
 
         return pac;
     }
-
-    AddPlayerPacket addPlayerBroadCast()
-    {
-        AddPlayerPacket pac = new AddPlayerPacket();
-        pac.eventType = EventType.ADD_PLAYER;
-        pac.ClientNum = ClientNum;
-        // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
-        if (connectedClients.Count > 0)
-        {
-            for (int i = 0; i < ClientNum; i++)
-            {
-                pac.ClientNums[i] = i;
-            }
-        }
-
-        // 위치는 클라에서 직접 지정
-        connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
-        ClientNum++;
-
-        return pac;
-    }
-
 
 
     void EndServer()
