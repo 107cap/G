@@ -8,13 +8,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    int selfClienNum = -1;
     bool? isVictory = null;
     DateTime raceTime;
 
     public NetworkManager networkManager = new NetworkManager();
     public EventManager eventManager;
     
-    //��Ŷ ĳ��
+    //패킷 캐싱
     IPacket tmpPacket;
     EventPacket eventPacket;
     PlayerPacket playerPacket;
@@ -42,7 +43,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        eventManager.Register(EventType.ADD_PLAYER, () => AddPlayers());   
+        eventManager.Register(EventType.ADD_PLAYER, () => AddPlayers());
+        eventManager.Register(EventType.JOIN_GAME, () => SetSelfClientNum());
+
+        RequestJoin();
     }
 
     public GameObject playerPrefab;
@@ -74,11 +78,9 @@ public class GameManager : MonoBehaviour
                     {
                         playerPacket = (PlayerPacket)tmpPacket;
 
-                        //�÷��̾� Update �� ��Ŷ ����
-                        networkManager.sendQue.Enqueue(
-                            playerDict[playerPacket.ClientNum].PlayerUpdate(playerPacket));
-
-                        //Debug.Log(player.playerPacket.GetPosition() + "enque ��");
+                        //Update other Player Position, Not send Updateed other Position
+                        if(!playerPacket.clientNum.Equals(selfClienNum))
+                            playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket);
                     }
                     break;
                 case PacketType.EVENT:
@@ -94,8 +96,16 @@ public class GameManager : MonoBehaviour
         #endregion
 
         //Send
+        //본인 클라이언트의 좌표값은 항상 전송
+        if(!selfClienNum.Equals(-1))    //본인 클라이언트가 존재 시
+            networkManager.sendQue.Enqueue( 
+                playerDict[selfClienNum].SelfPlayerUpdate(playerPacket));
+
         networkManager.Send();
     }
+
+    void SetSelfClientNum() => selfClienNum = eventPacket.clientNum;
+    public int GetSelfClientNum() => selfClienNum;
 
     /// <summary>
     /// Add Players In PlayScene
@@ -123,9 +133,10 @@ public class GameManager : MonoBehaviour
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());
     }
 
-    [ContextMenu("DeBug/CreatePacket")]
-    void CreatePacket()
+    [ContextMenu("DeBug/RequestJoin")]
+    void RequestJoin()
     {
+        //아무 패킷이나 보내서 UDP 연결
         EventPacket pac = new EventPacket();
         networkManager.sendQue.Enqueue(pac);
         // broadcast 용 패킷만들어서 enque

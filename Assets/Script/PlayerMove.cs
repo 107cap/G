@@ -28,9 +28,24 @@ public class PlayerMove : MonoBehaviour
         packet = new PlayerPacket();
         //Debug.Log("Awake : " + packet);
     }
+    public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
+    {
+        if (packet != null)
+        {
+            if(playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())
+                transform.position += playerPacket.GetPosition2Vec3();
+        }
+
+        //TODO - 로컬 변수 추가
+        Move();
+
+        playerPacket.SetPosition(movement);
+
+        return playerPacket;
+    }
 
 
-    public PlayerPacket PlayerUpdate(PlayerPacket playerPacket)
+    public PlayerPacket OtherPlayerUpdate(PlayerPacket playerPacket)
     {
         if (packet != null)
         {
@@ -44,7 +59,7 @@ public class PlayerMove : MonoBehaviour
 
         //입력에 의한 추가 이동
         //TODO - 로컬 변수 추가
-        Move();
+        //Move();
 
         playerPacket.SetPosition(movement);
         

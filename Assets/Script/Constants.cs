@@ -5,6 +5,10 @@ public static class Constants
    
 }
 
+
+/// <summary>
+/// 서버에서 클라로 명령하는 이벤트
+/// </summary>
 public enum EventType
 {
     NONE = 0,
