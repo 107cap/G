@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class AddPlayerPacket : EventPacket
 {
-    public int[] ClientNums = {};
+    public int[] ClientNums;
 
 }

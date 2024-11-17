@@ -89,8 +89,8 @@ public class NetworkManager
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(receivedData);
             if (packet != null)
             {
-                PlayerPacket pac = packet as PlayerPacket;
-                Debug.Log(pac.GetPosition() + "receive");
+                //PlayerPacket pac = packet as PlayerPacket;
+                //Debug.Log(pac.GetPosition() + "receive");
                 receiveQue.Enqueue(packet);
                 //Debug.Log("Packet received and enqueued.");
             }
@@ -103,5 +103,5 @@ public class NetworkManager
     }
 
 
-
+    
 }

@@ -48,10 +48,10 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     Dictionary<int, PlayerMove> playerDict = new Dictionary<int, PlayerMove>();
     Vector3[] sponPositions = new Vector3[] {
-        new Vector3(0f, 0f, 0f),
-        new Vector3(10f, 0f, 0f),
-        new Vector3(20f, 0f, 0f),
-        new Vector3(30f, 0f, 0f)
+        new Vector3(0f, 2f, 0f),
+        new Vector3(10f, 2f, 0f),
+        new Vector3(20f, 2f, 0f),
+        new Vector3(30f, 2f, 0f)
     };
 
     void Update()
@@ -121,5 +121,14 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(playerPrefab);
         player.transform.position = position;
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());
+    }
+
+    [ContextMenu("DeBug/CreatePacket")]
+    void CreatePacket()
+    {
+        EventPacket pac = new EventPacket();
+        networkManager.sendQue.Enqueue(pac);
+        // broadcast 용 패킷만들어서 enque
+        return;
     }
 }

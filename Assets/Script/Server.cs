@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Threading;
 using Newtonsoft.Json;
+using UnityEditor.Sprites;
 
 public class Server : MonoBehaviour
 {
@@ -23,11 +24,7 @@ public class Server : MonoBehaviour
     DateTime raceTime;
     IPEndPoint clientEndPoint;
     // 서버 딕셔너리 (recrive que 삭제)
-    private void Awake()
-    {
-        
 
-    }
     // Start is called before the first frame update
     void Start()
     {
@@ -167,6 +164,9 @@ public class Server : MonoBehaviour
         pac.ClientNum = ClientNum;
         // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
         // 여기 왔다는 것은 broadcast할게 있다는 뜻
+
+        
+        pac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리
         if (connectedClients.Count > 0)
         {
             for (int i = 0; i < ClientNum; i++)
@@ -201,5 +201,13 @@ public class Server : MonoBehaviour
     void UpdateRaceTime()
     {
 
+    }
+    [ContextMenu("DeBug/BroadcastAddPlayer")]
+    void DebugBroadCast()
+    {
+        AddPlayerPacket pac = addPlayer();
+        receiveQue.Enqueue(pac);
+        // broadcast 용 패킷만들어서 enque
+        return;
     }
 }
