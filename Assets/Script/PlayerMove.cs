@@ -8,6 +8,7 @@ public class PlayerMove : MonoBehaviour
 { 
 
     [SerializeField] int id;
+    [SerializeField] float curSpeed;
     [SerializeField] float maxSpeed;
     [SerializeField] float minSpeed;
 
@@ -28,6 +29,13 @@ public class PlayerMove : MonoBehaviour
         packet = new PlayerPacket();
         //Debug.Log("Awake : " + packet);
     }
+
+    void Start()
+    {
+        // 기본 스피드 초기화
+        curSpeed = minSpeed;
+    }
+
     public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
     {
         if (playerPacket == null)
@@ -91,7 +99,7 @@ public class PlayerMove : MonoBehaviour
             moveHorizontal += 1.0f;
         }
 
-        movement = new Vector3(moveHorizontal, 0.0f, moveVertical);//.normalized * minSpeed * Time.deltaTime;
+        movement = new Vector3(moveHorizontal, 0.0f, moveVertical)*curSpeed*Time.deltaTime;//.normalized * minSpeed * Time.deltaTime;
 
         //transform.Translate(movement, Space.World);
     }
