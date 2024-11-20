@@ -113,9 +113,7 @@ public class Server : MonoBehaviour
             {
                 receiveQue.Enqueue(packet); // 패킷 que에 넣기
             }
-
         }
-        
     }
 
     void flush()
@@ -127,10 +125,7 @@ public class Server : MonoBehaviour
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
             BroadCast(buff);
         }
-
         setraceTime();
-
-
     }
 
     //void send()
@@ -172,7 +167,6 @@ public class Server : MonoBehaviour
             }
         }
     }
-    // 클라에선 배열 있으면 만들어주고 없으면 안만듬. 이미 있어도 안만듬
    
     AddPlayerPacket addPlayer()
     {
@@ -183,14 +177,12 @@ public class Server : MonoBehaviour
         // 여기 왔다는 것은 broadcast할게 있다는 뜻
 
         
-        pac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리
-        if (connectedClients.Count > 0)
-        {
-            for (int i = 0; i < ClientNum; i++)
-            {
-                pac.ClientNums[i] = i;
-            }
-        }
+       pac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리
+       for (int i = 0; i <= ClientNum; i++)
+       {
+            pac.ClientNums[i] = i;
+       }
+        
 
         // 위치는 클라에서 직접 지정
         connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장

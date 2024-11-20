@@ -44,8 +44,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); Debug.Log("AddPlayer 받았다 데스"); });
-        eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); Debug.Log("Join Game받았다 데스네"); }); 
+        eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
+        eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); }); 
 
         RequestJoin();
     }
