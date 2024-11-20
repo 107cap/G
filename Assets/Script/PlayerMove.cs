@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -15,6 +16,11 @@ public class PlayerMove : MonoBehaviour
     Rigidbody m_Rigidbody;
     Vector3 movement;
     //Vector3 nextPosition;
+
+    bool m_topMove=true;
+    bool m_bottomMove=true;
+    bool m_leftMove = true;
+    bool m_rightMove = true;
 
     IPacket packet;
     //TODO - 서버와 연결 테스트 후 캡슐화하기
@@ -84,24 +90,88 @@ public class PlayerMove : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
-            moveVertical += 1.0f;
+            if (m_topMove)
+            {
+                moveVertical += 1.0f;
+            }
         }
         if (Input.GetKey(KeyCode.S))
         {
-            moveVertical -= 1.0f;
+            if (m_bottomMove)
+            {
+                moveVertical -= 1.0f;
+            }
         }
         if (Input.GetKey(KeyCode.A))
         {
-            moveHorizontal -= 1.0f;
+            if (m_leftMove)
+            {
+                moveHorizontal -= 1.0f;
+            }
         }
         if (Input.GetKey(KeyCode.D))
         {
-            moveHorizontal += 1.0f;
+            if (m_rightMove)
+            {
+                moveHorizontal += 1.0f;
+            }
         }
 
         movement = new Vector3(moveHorizontal, 0.0f, moveVertical)*curSpeed*Time.deltaTime;//.normalized * minSpeed * Time.deltaTime;
 
         //transform.Translate(movement, Space.World);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        switch (other.tag)
+        {
+            case "BasicWall":
+                Wall basicWall=other.GetComponent<Wall>();
+
+                switch (basicWall.posType)
+                {
+                    case Pos.Top:
+                        m_topMove = false;
+                        break;
+                    case Pos.Bottom:
+                        m_bottomMove = false;
+                        break;
+                    case Pos.Left:
+                        m_leftMove = false;
+                        break;
+                    case Pos.Right:
+                        m_rightMove = false;
+                        break;
+                }
+                break;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        switch (other.tag)
+        {
+            case "BasicWall":
+                Wall basicWall = other.GetComponent<Wall>();
+
+                switch (basicWall.posType)
+                {
+                    case Pos.Top:
+                        m_topMove = true;
+                        break;
+                    case Pos.Bottom:
+                        m_bottomMove = true;
+                        break;
+                    case Pos.Left:
+                        m_leftMove = true;
+                        break;
+                    case Pos.Right:
+                        m_rightMove = true;
+                        break;
+                }
+                break;
+        }
     }
 
     //public string IPacketHandler.Serialize(Packet _packet)
