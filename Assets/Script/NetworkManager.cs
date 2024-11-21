@@ -14,7 +14,7 @@ public class NetworkManager
 {
     //TODO - 서버와 초기 접속이 될 시 자기 클라번호 저장해두기
     private static UdpClient udpClient;
-    private static string serverIP = "192.168.185.190";
+    private static string serverIP = "192.168.0.52";
     private static int serverPort = 8080;
     private static int localPort = 0;
     public ConcurrentQueue<IPacket> sendQue = new ConcurrentQueue<IPacket>();

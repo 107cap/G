@@ -10,8 +10,10 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] int id;
     [SerializeField] float curSpeed;
+    [SerializeField] float basicSpeed;
     [SerializeField] float maxSpeed;
     [SerializeField] float minSpeed;
+    [SerializeField] float modifySpeed;
 
     Rigidbody m_Rigidbody;
     Vector3 movement;
@@ -39,7 +41,19 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         // 기본 스피드 초기화
-        curSpeed = minSpeed;
+        curSpeed = basicSpeed;
+    }
+
+    void Update()
+    {
+        if (curSpeed > basicSpeed)
+        {
+            curSpeed = Mathf.Clamp(curSpeed - modifySpeed * Time.deltaTime, basicSpeed, maxSpeed);
+        }
+        else if (curSpeed <= basicSpeed)
+        {
+            curSpeed = Mathf.Clamp(curSpeed + modifySpeed * Time.deltaTime, minSpeed, basicSpeed);
+        }
     }
 
     public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
@@ -122,12 +136,14 @@ public class PlayerMove : MonoBehaviour
         //transform.Translate(movement, Space.World);
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision collision)
     {
-        switch (other.tag)
+        GameObject collisionObject=collision.gameObject;
+
+        switch (collisionObject.tag)
         {
-            case "BasicWall":
-                Wall basicWall=other.GetComponent<Wall>();
+            case "Wall":
+                Wall basicWall = collisionObject.GetComponent<Wall>();
 
                 switch (basicWall.posType)
                 {
@@ -144,16 +160,24 @@ public class PlayerMove : MonoBehaviour
                         m_rightMove = false;
                         break;
                 }
+
+                if (basicWall.wallType == WallType.Reflection)
+                {
+                    
+                }
+
                 break;
         }
     }
 
-    void OnTriggerExit(Collider other)
+    void OnCollisionExit(Collision collision)
     {
-        switch (other.tag)
+        GameObject collisionObject = collision.gameObject;
+
+        switch (collisionObject.tag)
         {
-            case "BasicWall":
-                Wall basicWall = other.GetComponent<Wall>();
+            case "Wall":
+                Wall basicWall = collisionObject.GetComponent<Wall>();
 
                 switch (basicWall.posType)
                 {
@@ -170,6 +194,19 @@ public class PlayerMove : MonoBehaviour
                         m_rightMove = true;
                         break;
                 }
+                break;
+        }
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        GameObject colliderObject=other.gameObject;
+
+        switch (colliderObject.tag)
+        {
+            case "SpeedObject":
+                SpeedObject speedObject= colliderObject.GetComponent<SpeedObject>();
+                curSpeed = Mathf.Clamp(speedObject.SpeedControl(curSpeed),minSpeed,maxSpeed);
                 break;
         }
     }
