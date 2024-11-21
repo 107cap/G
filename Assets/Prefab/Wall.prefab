@@ -120,3 +120,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallType: 0
   posType: 0
+  refForce: 30

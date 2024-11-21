@@ -434,6 +434,10 @@ MonoBehaviour:
   maxSpeed: 10
   minSpeed: 5
   modifySpeed: 0
+  isImpact: 0
+  impactForce: {x: 0, y: 0, z: 0}
+  curImpactTime: 0
+  maxImpactTime: 0
 --- !u!1 &229238046
 GameObject:
   m_ObjectHideFlags: 0
@@ -2128,9 +2132,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08960f2684c7ca47a010e11d6337e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallType: 0
+  wallType: 1
   posType: 0
-  refForce: 0
+  refForce: 30
 --- !u!1 &1536536111
 GameObject:
   m_ObjectHideFlags: 0
@@ -2409,9 +2413,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08960f2684c7ca47a010e11d6337e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallType: 0
+  wallType: 1
   posType: 2
-  refForce: 0
+  refForce: 30
 --- !u!1 &1825723893
 GameObject:
   m_ObjectHideFlags: 0
@@ -2605,9 +2609,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08960f2684c7ca47a010e11d6337e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallType: 0
+  wallType: 1
   posType: 3
-  refForce: 5
+  refForce: 30
 --- !u!1 &1920401352
 GameObject:
   m_ObjectHideFlags: 0
@@ -2913,6 +2917,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8704511353285898907, guid: a20fc5feaf5f30945ac9871281284b08, type: 3}
       propertyPath: posType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704511353285898907, guid: a20fc5feaf5f30945ac9871281284b08, type: 3}
+      propertyPath: wallType
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

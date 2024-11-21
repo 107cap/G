@@ -7,7 +7,6 @@ using UnityEngine.Playables;
 
 public class PlayerMove : MonoBehaviour
 { 
-
     [SerializeField] int id;
     [SerializeField] float curSpeed;
     [SerializeField] float basicSpeed;
@@ -18,6 +17,12 @@ public class PlayerMove : MonoBehaviour
     Rigidbody m_Rigidbody;
     Vector3 movement;
     //Vector3 nextPosition;
+
+    [Header("Impact")]
+    [SerializeField] bool isImpact;
+    [SerializeField] Vector3 impactForce;
+    [SerializeField] float curImpactTime;
+    [SerializeField] float maxImpactTime;
 
     bool m_topMove=true;
     bool m_bottomMove=true;
@@ -46,14 +51,7 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        if (curSpeed > basicSpeed)
-        {
-            curSpeed = Mathf.Clamp(curSpeed - modifySpeed * Time.deltaTime, basicSpeed, maxSpeed);
-        }
-        else if (curSpeed <= basicSpeed)
-        {
-            curSpeed = Mathf.Clamp(curSpeed + modifySpeed * Time.deltaTime, minSpeed, basicSpeed);
-        }
+        SpeedControl();     // speed 일정 값 조정
     }
 
     public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
@@ -69,6 +67,7 @@ public class PlayerMove : MonoBehaviour
 
         //TODO - 로컬 변수 추가
         Move();
+        ImpactControl();
 
         playerPacket.SetPosition(movement);
 
@@ -106,34 +105,61 @@ public class PlayerMove : MonoBehaviour
         {
             if (m_topMove)
             {
-                moveVertical += 1.0f;
+                moveVertical = 1.0f;
             }
         }
         if (Input.GetKey(KeyCode.S))
         {
             if (m_bottomMove)
             {
-                moveVertical -= 1.0f;
+                moveVertical = -1.0f;
             }
         }
         if (Input.GetKey(KeyCode.A))
         {
             if (m_leftMove)
             {
-                moveHorizontal -= 1.0f;
+                moveHorizontal = -1.0f;
             }
         }
         if (Input.GetKey(KeyCode.D))
         {
             if (m_rightMove)
             {
-                moveHorizontal += 1.0f;
+                moveHorizontal = 1.0f;
             }
         }
 
-        movement = new Vector3(moveHorizontal, 0.0f, moveVertical)*curSpeed*Time.deltaTime;//.normalized * minSpeed * Time.deltaTime;
+        movement = new Vector3(moveHorizontal, 0.0f, moveVertical) * curSpeed * Time.deltaTime;//.normalized * minSpeed * Time.deltaTime;
 
         //transform.Translate(movement, Space.World);
+    }
+
+    void SpeedControl()
+    {
+        if (curSpeed > basicSpeed)
+        {
+            curSpeed = Mathf.Clamp(curSpeed - modifySpeed * Time.deltaTime, basicSpeed, maxSpeed);
+        }
+        else if (curSpeed <= basicSpeed)
+        {
+            curSpeed = Mathf.Clamp(curSpeed + modifySpeed * Time.deltaTime, minSpeed, basicSpeed);
+        }
+    }
+
+    void ImpactControl()
+    {
+        if (curImpactTime > 0)
+        {
+            movement += impactForce * (curImpactTime / maxImpactTime) * Time.deltaTime;
+            curImpactTime -= Time.deltaTime;
+
+            if (curImpactTime <= 0)
+            {
+                impactForce = Vector3.zero;
+                isImpact = false;
+            }
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -163,7 +189,9 @@ public class PlayerMove : MonoBehaviour
 
                 if (basicWall.wallType == WallType.Reflection)
                 {
-                    
+                    impactForce = basicWall.ReflectionPos();
+                    curImpactTime = maxImpactTime;
+                    isImpact = true;
                 }
 
                 break;

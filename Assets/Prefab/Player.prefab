@@ -154,3 +154,7 @@ MonoBehaviour:
   maxSpeed: 10
   minSpeed: 2.5
   modifySpeed: 2
+  isImpact: 0
+  impactForce: {x: 0, y: 0, z: 0}
+  curImpactTime: 0
+  maxImpactTime: 1
