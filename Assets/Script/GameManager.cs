@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public PlayerCamera playerCamera;
+
     int selfClientNum = -1;
     bool? isVictory = null;
     DateTime raceTime;
@@ -155,6 +157,14 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(playerPrefab);
         player.transform.position = position;
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());
+
+        if (clientNum == selfClientNum)
+        {
+            if (playerCamera != null)
+            {
+                playerCamera.SetPlayer(player);
+            }
+        }
     }
 
     [ContextMenu("DeBug/RequestJoin")]

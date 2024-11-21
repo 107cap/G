@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 
 public class PlayerMove : MonoBehaviour
-{ 
+{
     [SerializeField] int id;
     [SerializeField] float curSpeed;
     [SerializeField] float basicSpeed;
@@ -173,6 +173,8 @@ public class PlayerMove : MonoBehaviour
 
                 switch (basicWall.posType)
                 {
+                    case Pos.Basic:
+                        break;
                     case Pos.Top:
                         m_topMove = false;
                         break;
