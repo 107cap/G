@@ -50,7 +50,6 @@ public class Server : MonoBehaviour
     void Update()
     {
         Receive();
-        raceTime += Time.deltaTime;
     }
 
 
@@ -139,7 +138,6 @@ public class Server : MonoBehaviour
         //Debug.Log("Receive Packet");
         if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
-            Debug.Log(connectedClients.ContainsValue(clientEndPoint));
             AddPlayerPacket pac = addPlayer();
             // 처음 접속 클라 번호 넘겨주기
             EventPacket eventPacket = new EventPacket();

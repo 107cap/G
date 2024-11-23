@@ -47,10 +47,37 @@ public class NetworkManager
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
             PlayerPacket pac = packet as PlayerPacket;
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
-            string abc = JsonConvert.SerializeObject(pac);
             udpClient.Send(buff, buff.Length, serverEndPoint);
         }
         
+    }
+
+    public void flush()
+    {
+        IPacket packet = null;
+        byte[] buff = null;
+        IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
+
+        for (int i = receiveQue.Count; i > 0; i--)
+        {
+            receiveQue.TryDequeue(out packet);
+            switch (packet.Type)
+            {
+                case (PacketType.PLAYER):
+                {
+                        PlayerPacket pac = packet as PlayerPacket;
+                        buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
+                        break;
+                }
+                case (PacketType.EVENT):
+                {
+                        EventPacket pac = packet as EventPacket;
+                        buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
+                        break;
+                }
+            }
+            udpClient.Send(buff, buff.Length, serverEndPoint);
+        }
     }
     
     // 받은 애 enque만 server->client
