@@ -18,7 +18,7 @@ public class Server : MonoBehaviour
     private static UdpClient udpServer;
     
     private static Dictionary<int, IPEndPoint> connectedClients = new Dictionary<int, IPEndPoint>();
-    //ConcurrentQueue<byte[]> sendQue = new ConcurrentQueue<byte[]>();
+    ConcurrentQueue<IPacket> sendQue = new ConcurrentQueue<IPacket>();
     ConcurrentQueue<IPacket> receiveQue = new ConcurrentQueue<IPacket>();
     int ClientNum = 0;
     int receiveClientNum = 0;
@@ -36,7 +36,6 @@ public class Server : MonoBehaviour
                                                //비동기식(비블로킹 모드): 소켓이 데이터를 기다리지 않고 바로 반환되며, 데이터가 오면 별도의 작업을 통해 처리.
             udpServer.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true); //추가
             clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-
             StartCoroutine(TempThread());
         }
         catch (Exception e)
@@ -46,11 +45,9 @@ public class Server : MonoBehaviour
        
     }
 
+
     // Update is called once per frame
-    void Update()
-    {
-        Receive();
-    }
+   
 
 
     void setraceTime()
@@ -62,8 +59,9 @@ public class Server : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSecondsRealtime(0.02f);
+            Receive();
             flush();
+            yield return new WaitForSecondsRealtime(0.02f);
         }
     }
 
@@ -84,19 +82,39 @@ public class Server : MonoBehaviour
     {
         foreach (var client in connectedClients)
         {
-           udpServer.Send(packet, packet.Length, client.Value);
+            try
+            {
+                udpServer.Send(packet, packet.Length, client.Value);
+            }
+            catch (Exception e)
+            {
+
+                Debug.Log(e);
+            }
         }
     }
     
     // 해당 Client Num에만 send
     void UniCast(byte[] packet, int ClientNum)
     {
+        //Debug.Log("Unicast 시작");
         foreach(var client in connectedClients)
         {
-            if (client.Key.Equals(ClientNum))
+            try
             {
-                udpServer.Send(packet, packet.Length, client.Value);
+                if (client.Key.Equals(ClientNum))
+                {
+                    //Debug.Log("Unicast 찾음");
+                    udpServer.Send(packet, packet.Length, client.Value);
+                }
             }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+            
+
+            
         }
     }
     
@@ -104,42 +122,31 @@ public class Server : MonoBehaviour
     //클라->서버 받기
     void Receive()
     {
+        //Debug.Log("Receive 시작");
         if (udpServer.Available > 0)
         {
             byte[] receivedBuff = udpServer.Receive(ref clientEndPoint);
+            //ebug.Log("Receive 처리");
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(Encoding.UTF8.GetString(receivedBuff));
             // else로 처음 안왔을떄만 처리?
-            Process(ref packet);
-            if (packet != null)
-            {
-                receiveQue.Enqueue(packet); // 패킷 que에 넣기
-            }
+            receiveQue.Enqueue(packet);
 
-            //if (packet == null)
+            Process();
+
+
         }
+
     }
 
-    void flush()
+    void Process()
     {
-        Debug.Log("Server Packet : " + receiveQue.Count);
-        for (int i = receiveQue.Count; i > 0; i--) 
-        {
-            IPacket packet = null;
-            receiveQue.TryDequeue(out packet);
-            byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
-            BroadCast(buff);
-        }
-        // setraceTime();
-    }
-
-    //void send()
-
-    void Process(ref IPacket packet)
-    {
+        IPacket packet = null;
+        receiveQue.TryDequeue(out packet);
         //Debug.Log("Receive Packet");
         if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
             AddPlayerPacket pac = addPlayer();
+            //Debug.Log("@@@");
             // 처음 접속 클라 번호 넘겨주기
             EventPacket eventPacket = new EventPacket();
             eventPacket.clientNum = pac.ClientNum;
@@ -147,8 +154,8 @@ public class Server : MonoBehaviour
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(eventPacket));
             UniCast(buff, eventPacket.clientNum);
 
-            
-            receiveQue.Enqueue(pac);
+
+            sendQue.Enqueue(pac);
             packet = null;
 
             return;
@@ -160,22 +167,44 @@ public class Server : MonoBehaviour
             {
                 PlayerPacket pac = packet as PlayerPacket;
                 pac.SetPosition(pac.GetPosition2Vec3());
+                if (pac.clientNum == 1 || pac.clientNum == 0)
+                {
+                    Debug.Log("Client Num = " + pac.clientNum);
+                    pac.timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                }
                 packet = (IPacket)pac;
             }
 
             else if (packet.Type == PacketType.EVENT)
             {
                 EventPacket pac = packet as EventPacket;
-                switch(pac.eventType)
+                switch (pac.eventType)
                 {
                     case EventType.NONE:
-                        Debug.Log("!!!");
+                        //Debug.Log("!!!");
                         break;
                 }
             }
         }
+        if (packet != null)
+        {
+            sendQue.Enqueue(packet); // 패킷 que에 넣기
+        }
     }
-   
+
+    void flush()
+    {
+        //Debug.Log("Server Packet : " + receiveQue.Count);
+        for (int i = sendQue.Count; i > 0; i--) 
+        {
+            IPacket packet = null;
+            sendQue.TryDequeue(out packet);
+            byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
+            BroadCast(buff);
+        }
+        // setraceTime();
+    }
+
     AddPlayerPacket addPlayer()
     {
         AddPlayerPacket pac = new AddPlayerPacket();

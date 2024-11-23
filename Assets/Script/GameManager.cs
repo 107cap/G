@@ -143,26 +143,26 @@ public class GameManager : MonoBehaviour
 
         foreach (var item in addPlayerPacket.ClientNums)
         {
-            Debug.Log("ADDPlayer.ClientNums : " + item);
+            //Debug.Log("ADDPlayer.ClientNums : " + item);
         }
 
         for (int i = 0; i < addPlayerPacket.ClientNums.Length; i++)
         {
-            Debug.Log("create 전 num값 : " + addPlayerPacket.ClientNums[i]);
+            //Debug.Log("create 전 num값 : " + addPlayerPacket.ClientNums[i]);
             CreatePlayer(addPlayerPacket.ClientNums[i], sponPositions[i]);
         }
     }
     
     void CreatePlayer(int clientNum, Vector3 position)
     {
-        Debug.Log("createPlayer.num : " + clientNum);
+       // Debug.Log("createPlayer.num : " + clientNum);
 
         //Early return;
         if (playerDict.ContainsKey(clientNum))
             return;
 
         //Create Player And Add Dict
-        Debug.Log("작동 createPlayer");
+        //Debug.Log("작동 createPlayer");
         GameObject player = Instantiate(playerPrefab);
         player.transform.position = position;
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());

@@ -79,9 +79,15 @@ public class PlayerMove : MonoBehaviour
         {
             if (Move())
             {
+                Debug.Log("Move : " + GameManager.Instance.networkManager.sendQue.Count);
                 playerPacket.SetPosition(movement);
                 playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
                 GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
+            }
+
+            else
+            {
+                playerPacket = null;
             }
         }
     }
