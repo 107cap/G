@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviour
     Vector3 movement;
     //Vector3 nextPosition;
 
-    IPacket packet;
+    //IPacket packet;
     //TODO - 서버와 연결 테스트 후 캡슐화하기
     public PlayerPacket playerPacket;
 
@@ -25,54 +25,57 @@ public class PlayerMove : MonoBehaviour
         m_Rigidbody = GetComponent<Rigidbody>();
 
         playerPacket = new PlayerPacket();
-        packet = new PlayerPacket();
+        //packet = new PlayerPacket();
     }
-    public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
+    //public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
+    //{
+    //    if (playerPacket == null)
+    //        playerPacket = new PlayerPacket();
+
+    //    if (packet != null)
+    //    {
+    //        if(playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())
+    //            transform.position += playerPacket.GetPosition2Vec3();
+    //    }
+
+    //    //TODO - 로컬 변수 추가
+    //    if(GameManager.Instance.isStarting)
+    //    {
+    //        Move();
+    //        playerPacket.SetPosition(movement);
+    //        playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+    //        Debug.Log(DateTime.Now.ToString("HH:mm:ss.ffff"));
+    //    }
+
+    //    return playerPacket;
+    //}
+
+
+    public PlayerPacket OtherPlayerUpdate(PlayerPacket _pp)
     {
-        if (playerPacket == null)
-            playerPacket = new PlayerPacket();
-
-        if (packet != null)
+        if (_pp != null)
         {
-            if(playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())
-                transform.position += playerPacket.GetPosition2Vec3();
+            transform.position += _pp.GetPosition2Vec3();
         }
 
-        //TODO - 로컬 변수 추가
-        if(GameManager.Instance.isStarting)
-        {
-            Move();
-            playerPacket.SetPosition(movement);
-            playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
-            Debug.Log(DateTime.Now.ToString("HH:mm:ss.ffff"));
-        }
-
-        return playerPacket;
-    }
-
-
-    public PlayerPacket OtherPlayerUpdate(PlayerPacket playerPacket)
-    {
-        if (packet != null)
-        {
-            transform.position += playerPacket.GetPosition2Vec3();
-        }
-
-        playerPacket.SetPosition(movement);
+        _pp.SetPosition(movement);
         
-        return playerPacket; 
+        return _pp; 
     }
 
     public void DebugMoveSelf()
     {
-        if (playerPacket == null)
-            playerPacket = new PlayerPacket();
+        //if (playerPacket == null)
+        //    playerPacket = new PlayerPacket();
 
-        if (packet != null)
-        {
-            if (playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())
-                transform.position += playerPacket.GetPosition2Vec3();
-        }
+        //if (playerPacket != null)
+        //{
+        //    if (playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())
+        //        transform.position += playerPacket.GetPosition2Vec3();
+        //}
+
+        if (playerPacket == null)
+            return;
 
         //TODO - 로컬 변수 추가
         if (GameManager.Instance.isStarting)
@@ -80,14 +83,10 @@ public class PlayerMove : MonoBehaviour
             if (Move())
             {
                 Debug.Log("Move : " + GameManager.Instance.networkManager.sendQue.Count);
+                transform.position += movement;
                 playerPacket.SetPosition(movement);
                 playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
                 GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
-            }
-
-            else
-            {
-                playerPacket = null;
             }
         }
     }
