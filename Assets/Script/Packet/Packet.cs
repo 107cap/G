@@ -7,7 +7,7 @@ public class Packet<T>
     //T value;
     //public PacketType type;
 
-    ////TODO - Á¦³×¸¯À¸·Î Á¤¸®
+    ////TODO - ì œë„¤ë¦­ìœ¼ë¡œ ì •ë¦¬
     //public virtual void InitValue() { }
     //public virtual void SetValue(T _value) => value = _value;
 

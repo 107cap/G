@@ -16,7 +16,7 @@ public class PlayerPacket : IPacket
     public float y;
     public float z;
 
-    public PlayerPacket() { timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); }
+    public PlayerPacket() { }
     
     public (float, float, float) GetPosition() => (x, y, z);
     public Vector3 GetPosition2Vec3() => new Vector3(x, y, z);

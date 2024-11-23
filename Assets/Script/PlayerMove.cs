@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,6 +44,7 @@ public class PlayerMove : MonoBehaviour
             Move();
             playerPacket.SetPosition(movement);
             playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+            Debug.Log(DateTime.Now.ToString("HH:mm:ss.ffff"));
         }
 
         return playerPacket;
@@ -61,7 +63,30 @@ public class PlayerMove : MonoBehaviour
         return playerPacket; 
     }
 
-    private void Move()
+    public void DebugMoveSelf()
+    {
+        if (playerPacket == null)
+            playerPacket = new PlayerPacket();
+
+        if (packet != null)
+        {
+            if (playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())
+                transform.position += playerPacket.GetPosition2Vec3();
+        }
+
+        //TODO - 로컬 변수 추가
+        if (GameManager.Instance.isStarting)
+        {
+            if (Move())
+            {
+                playerPacket.SetPosition(movement);
+                playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+                GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
+            }
+        }
+    }
+
+    private bool Move()
     {
         float moveHorizontal = 0.0f;
         float moveVertical = 0.0f;
@@ -84,6 +109,11 @@ public class PlayerMove : MonoBehaviour
         }
 
         movement = new Vector3(moveHorizontal, 0.0f, moveVertical);//.normalized * minSpeed * Time.deltaTime;
+
+        if (movement.Equals(Vector3.zero))
+            return false;
+        else
+            return true;
 
         //transform.Translate(movement, Space.World);
     }

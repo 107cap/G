@@ -66,14 +66,16 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        //Receive
-        networkManager.Receive();
+       
     }
 
     private IEnumerator Process()
     {
         while (true)
         {
+            //Receive
+            networkManager.Receive();
+
             #region Process
 
             networkManager.receiveQue.TryDequeue(out tmpPacket);
@@ -89,6 +91,8 @@ public class GameManager : MonoBehaviour
                         if (!playerDict.Count.Equals(0))
                         {
                             playerPacket = (PlayerPacket)tmpPacket;
+
+                            Debug.Log("프로세스 과정 : " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - playerPacket.timestamp));
 
                             //Update other Player Position, Not send Updateed other Position
                             Debug.Log(selfClientNum);
@@ -111,9 +115,12 @@ public class GameManager : MonoBehaviour
 
             //Send
             //본인 클라이언트의 좌표값은 항상 전송
-            if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
-                networkManager.sendQue.Enqueue(
-                    playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
+            //if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
+            //    networkManager.sendQue.Enqueue(
+            //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
+
+            if(playerDict.ContainsKey(selfClientNum))
+                playerDict[selfClientNum].DebugMoveSelf();
 
             networkManager.flush();
 
