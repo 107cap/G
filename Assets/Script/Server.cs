@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Newtonsoft.Json;
 using UnityEditor.Sprites;
+using UnityEditor.PackageManager;
 
 public class Server : MonoBehaviour
 {
@@ -30,11 +31,13 @@ public class Server : MonoBehaviour
     {
         try
         {
-            udpServer = new UdpClient(serverPort);
+            udpServer = new UdpClient(8080);
             udpServer.Client.Blocking = false; // 동기식 (블로킹 모드): 소켓이 데이터를 받을 때까지 기다리고, 데이터가 오지 않으면 프로그램이 멈춤.
                                                //비동기식(비블로킹 모드): 소켓이 데이터를 기다리지 않고 바로 반환되며, 데이터가 오면 별도의 작업을 통해 처리.
-            StartCoroutine(TempThread());
+            udpServer.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true); //추가
             clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+
+            StartCoroutine(TempThread());
         }
         catch (Exception e)
         {
@@ -61,7 +64,7 @@ public class Server : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSecondsRealtime(0.01f);
+            yield return new WaitForSecondsRealtime(0.02f);
             flush();
         }
     }
@@ -113,6 +116,8 @@ public class Server : MonoBehaviour
             {
                 receiveQue.Enqueue(packet); // 패킷 que에 넣기
             }
+
+            //if (packet == null)
         }
     }
 
@@ -125,15 +130,17 @@ public class Server : MonoBehaviour
             byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(packet));
             BroadCast(buff);
         }
-        setraceTime();
+        // setraceTime();
     }
 
     //void send()
 
     void Process(ref IPacket packet)
     {
+        //Debug.Log("Receive Packet");
         if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
+            Debug.Log(connectedClients.ContainsValue(clientEndPoint));
             AddPlayerPacket pac = addPlayer();
             // 처음 접속 클라 번호 넘겨주기
             EventPacket eventPacket = new EventPacket();
@@ -145,6 +152,7 @@ public class Server : MonoBehaviour
             
             receiveQue.Enqueue(pac);
             packet = null;
+
             return;
         }
 
@@ -172,23 +180,25 @@ public class Server : MonoBehaviour
     {
         AddPlayerPacket pac = new AddPlayerPacket();
         pac.eventType = EventType.ADD_PLAYER;
-        pac.ClientNum = ClientNum;
+        pac.ClientNum = ClientNum; // 1
         // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
         // 여기 왔다는 것은 broadcast할게 있다는 뜻
 
         
-       pac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리
-       for (int i = 0; i <= ClientNum; i++)
+       pac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리 0 1 2
+       //Debug.Log("connected count + 1 : " + (connectedClients.Count + 1));
+       for (int i = 0; i <= ClientNum; i++) // 1
        {
             pac.ClientNums[i] = i;
        }
-        
 
-        // 위치는 클라에서 직접 지정
-        connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
-        ClientNum++;
 
-        return pac;
+
+       // 위치는 클라에서 직접 지정
+       connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
+       ClientNum++;
+
+       return pac;
     }
 
 
