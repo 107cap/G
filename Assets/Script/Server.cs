@@ -121,6 +121,7 @@ public class Server : MonoBehaviour
 
     void flush()
     {
+        Debug.Log("Server Packet : " + receiveQue.Count);
         for (int i = receiveQue.Count; i > 0; i--) 
         {
             IPacket packet = null;
@@ -167,7 +168,9 @@ public class Server : MonoBehaviour
                 EventPacket pac = packet as EventPacket;
                 switch(pac.eventType)
                 {
-                    
+                    case EventType.NONE:
+                        Debug.Log("!!!");
+                        break;
                 }
             }
         }
