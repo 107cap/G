@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviour
     //Vector3 nextPosition;
 
     IPacket packet;
-    //TODO - ¼­¹ö¿Í ¿¬°á Å×½ºÆ® ÈÄ Ä¸½¶È­ÇÏ±â
+    //TODO - ì„œë²„ì™€ ì—°ê²° í…ŒìŠ¤íŠ¸ í›„ ìº¡ìŠí™”í•˜ê¸°
     public PlayerPacket playerPacket;
 
     private void Awake()
@@ -39,7 +39,7 @@ public class PlayerMove : MonoBehaviour
                 transform.position += playerPacket.GetPosition2Vec3();
         }
 
-        //TODO - ·ÎÄÃ º¯¼ö Ãß°¡
+        //TODO - ë¡œì»¬ ë³€ìˆ˜ ì¶”ê°€
         Move();
 
         playerPacket.SetPosition(movement);
@@ -56,12 +56,12 @@ public class PlayerMove : MonoBehaviour
             transform.position += playerPacket.GetPosition2Vec3();
         }
         //Debug.Log(packet);
-        //Debug.Log(nextPosition + "Å¬¶ó nextPosition -> ´ÙÀ½ ÁÂÇ¥");
+        //Debug.Log(nextPosition + "í´ë¼ nextPosition -> ë‹¤ìŒ ì¢Œí‘œ");
         //playerPacket.SetPosition((nowVelocity.x, nowVelocity.y, nowVelocity.z));
 
 
-        //ÀÔ·Â¿¡ ÀÇÇÑ Ãß°¡ ÀÌµ¿
-        //TODO - ·ÎÄÃ º¯¼ö Ãß°¡
+        //ì…ë ¥ì— ì˜í•œ ì¶”ê°€ ì´ë™
+        //TODO - ë¡œì»¬ ë³€ìˆ˜ ì¶”ê°€
         //Move();
 
         playerPacket.SetPosition(movement);

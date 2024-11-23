@@ -12,9 +12,9 @@ using Newtonsoft.Json;
 
 public class NetworkManager
 {
-    //TODO - ¼­¹ö¿Í ÃÊ±â Á¢¼ÓÀÌ µÉ ½Ã ÀÚ±â Å¬¶ó¹øÈ£ ÀúÀåÇØµÎ±â
+    //TODO - ì„œë²„ì™€ ì´ˆê¸° ì ‘ì†ì´ ë  ì‹œ ìê¸° í´ë¼ë²ˆí˜¸ ì €ì¥í•´ë‘ê¸°
     private static UdpClient udpClient;
-    private static string serverIP = "172.16.2.16";
+    private static string serverIP = "192.168.0.252";
     private static int serverPort = 8080;
     private static int localPort = 0;
     public ConcurrentQueue<IPacket> sendQue = new ConcurrentQueue<IPacket>();
@@ -26,7 +26,7 @@ public class NetworkManager
         udpClient.Client.Blocking = false;
     }
 
-    // deque ½ÃÄÑ¼­ send¸¸ clinet->server
+    // deque ì‹œì¼œì„œ sendë§Œ clinet->server
     public async Task SendAsync()
     {
         IPacket packet = null;
@@ -53,7 +53,7 @@ public class NetworkManager
         
     }
     
-    // ¹ŞÀº ¾Ö enque¸¸ server->client
+    // ë°›ì€ ì•  enqueë§Œ server->client
     public async Task ReceiveAsync()
     {
         IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Any, 0);
@@ -63,7 +63,6 @@ public class NetworkManager
             UdpReceiveResult receivedResult = await udpClient.ReceiveAsync();
             receiveQue.Enqueue(
                 JsonConvert.DeserializeObject<IPacket>(Encoding.UTF8.GetString(receivedResult.Buffer)));
-
         }
         catch (Exception ex)
         {
@@ -74,25 +73,17 @@ public class NetworkManager
 
     public void Receive()
     {
-
         if (udpClient.Available > 0)
         {
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
             byte[] buff = udpClient.Receive(ref serverEndPoint);
             string receivedData = Encoding.UTF8.GetString(buff);
             
-
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(receivedData);
             if (packet != null)
             {
                 receiveQue.Enqueue(packet);
             }
         }
-
     }
-
-    
-
-
-    
 }

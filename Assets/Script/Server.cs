@@ -24,7 +24,7 @@ public class Server : MonoBehaviour
     int receiveClientNum = 0;
     float raceTime;
     IPEndPoint clientEndPoint;
-    // ¼­¹ö µñ¼Å³Ê¸® (recrive que »èÁ¦)
+    // ì„œë²„ ë”•ì…”ë„ˆë¦¬ (recrive que ì‚­ì œ)
 
     // Start is called before the first frame update
     void Start()
@@ -32,9 +32,9 @@ public class Server : MonoBehaviour
         try
         {
             udpServer = new UdpClient(8080);
-            udpServer.Client.Blocking = false; // µ¿±â½Ä (ºí·ÎÅ· ¸ğµå): ¼ÒÄÏÀÌ µ¥ÀÌÅÍ¸¦ ¹ŞÀ» ¶§±îÁö ±â´Ù¸®°í, µ¥ÀÌÅÍ°¡ ¿ÀÁö ¾ÊÀ¸¸é ÇÁ·Î±×·¥ÀÌ ¸ØÃã.
-                                               //ºñµ¿±â½Ä(ºñºí·ÎÅ· ¸ğµå): ¼ÒÄÏÀÌ µ¥ÀÌÅÍ¸¦ ±â´Ù¸®Áö ¾Ê°í ¹Ù·Î ¹İÈ¯µÇ¸ç, µ¥ÀÌÅÍ°¡ ¿À¸é º°µµÀÇ ÀÛ¾÷À» ÅëÇØ Ã³¸®.
-            udpServer.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true); //Ãß°¡
+            udpServer.Client.Blocking = false; // ë™ê¸°ì‹ (ë¸”ë¡œí‚¹ ëª¨ë“œ): ì†Œì¼“ì´ ë°ì´í„°ë¥¼ ë°›ì„ ë•Œê¹Œì§€ ê¸°ë‹¤ë¦¬ê³ , ë°ì´í„°ê°€ ì˜¤ì§€ ì•Šìœ¼ë©´ í”„ë¡œê·¸ë¨ì´ ë©ˆì¶¤.
+                                               //ë¹„ë™ê¸°ì‹(ë¹„ë¸”ë¡œí‚¹ ëª¨ë“œ): ì†Œì¼“ì´ ë°ì´í„°ë¥¼ ê¸°ë‹¤ë¦¬ì§€ ì•Šê³  ë°”ë¡œ ë°˜í™˜ë˜ë©°, ë°ì´í„°ê°€ ì˜¤ë©´ ë³„ë„ì˜ ì‘ì—…ì„ í†µí•´ ì²˜ë¦¬.
+            udpServer.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true); //ì¶”ê°€
             clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
             StartCoroutine(TempThread());
@@ -56,8 +56,7 @@ public class Server : MonoBehaviour
 
     void setraceTime()
     {
-        // ÆĞÅ¶ ¸¸µé¾î¼­ º¸³»±â
-        
+        // íŒ¨í‚· ë§Œë“¤ì–´ì„œ ë³´ë‚´ê¸°
     }
 
     IEnumerator TempThread()
@@ -69,7 +68,7 @@ public class Server : MonoBehaviour
         }
     }
 
-    //¼­¹ö->Å¬¶ó(broadcast, º¸³½ ¾Ö´Â ¹ŞÁö ¾ÊÀ½)
+    //ì„œë²„->í´ë¼(broadcast, ë³´ë‚¸ ì• ëŠ” ë°›ì§€ ì•ŠìŒ)
     void BroadCast(byte[] packet, int senderClientNum)
     {
         foreach (var client in connectedClients)
@@ -81,7 +80,7 @@ public class Server : MonoBehaviour
         }
     }
 
-    // ÁøÂ¥ broadcast 
+    // ì§„ì§œ broadcast 
     void BroadCast(byte[] packet)
     {
         foreach (var client in connectedClients)
@@ -90,7 +89,7 @@ public class Server : MonoBehaviour
         }
     }
     
-    // ÇØ´ç Client Num¿¡¸¸ send
+    // í•´ë‹¹ Client Numì—ë§Œ send
     void UniCast(byte[] packet, int ClientNum)
     {
         foreach(var client in connectedClients)
@@ -103,18 +102,18 @@ public class Server : MonoBehaviour
     }
     
 
-    //Å¬¶ó->¼­¹ö ¹Ş±â
+    //í´ë¼->ì„œë²„ ë°›ê¸°
     void Receive()
     {
         if (udpServer.Available > 0)
         {
             byte[] receivedBuff = udpServer.Receive(ref clientEndPoint);
             IPacket packet = JsonConvert.DeserializeObject<IPacket>(Encoding.UTF8.GetString(receivedBuff));
-            // else·Î Ã³À½ ¾È¿ÔÀ»‹š¸¸ Ã³¸®?
+            // elseë¡œ ì²˜ìŒ ì•ˆì™”ì„ë–„ë§Œ ì²˜ë¦¬?
             Process(ref packet);
             if (packet != null)
             {
-                receiveQue.Enqueue(packet); // ÆĞÅ¶ que¿¡ ³Ö±â
+                receiveQue.Enqueue(packet); // íŒ¨í‚· queì— ë„£ê¸°
             }
 
             //if (packet == null)
@@ -138,11 +137,11 @@ public class Server : MonoBehaviour
     void Process(ref IPacket packet)
     {
         //Debug.Log("Receive Packet");
-        if (!connectedClients.ContainsValue(clientEndPoint)) // Ã³À½ Á¢¼Ó
+        if (!connectedClients.ContainsValue(clientEndPoint)) // ì²˜ìŒ ì ‘ì†
         {
             Debug.Log(connectedClients.ContainsValue(clientEndPoint));
             AddPlayerPacket pac = addPlayer();
-            // Ã³À½ Á¢¼Ó Å¬¶ó ¹øÈ£ ³Ñ°ÜÁÖ±â
+            // ì²˜ìŒ ì ‘ì† í´ë¼ ë²ˆí˜¸ ë„˜ê²¨ì£¼ê¸°
             EventPacket eventPacket = new EventPacket();
             eventPacket.clientNum = pac.ClientNum;
             eventPacket.eventType = EventType.JOIN_GAME;
@@ -156,7 +155,7 @@ public class Server : MonoBehaviour
             return;
         }
 
-        else // Ã³À½ Á¢¼ÓÀÌ ¾Æ´Ò¶§
+        else // ì²˜ìŒ ì ‘ì†ì´ ì•„ë‹ë•Œ
         {
             if (packet.Type == PacketType.PLAYER)
             {
@@ -181,21 +180,18 @@ public class Server : MonoBehaviour
         AddPlayerPacket pac = new AddPlayerPacket();
         pac.eventType = EventType.ADD_PLAYER;
         pac.ClientNum = ClientNum; // 1
-        // ¹è¿­ °ª ¼³Á¤Àº if µñ¼Å³Ê¸®¿¡ °ª 1ÀÌ¶óµµ ÀÖÀ¸¸é && Ã³À½ Á¢¼ÓÀÌ¸é
-        // ¿©±â ¿Ô´Ù´Â °ÍÀº broadcastÇÒ°Ô ÀÖ´Ù´Â ¶æ
+        // ë°°ì—´ ê°’ ì„¤ì •ì€ if ë”•ì…”ë„ˆë¦¬ì— ê°’ 1ì´ë¼ë„ ìˆìœ¼ë©´ && ì²˜ìŒ ì ‘ì†ì´ë©´
+        // ì—¬ê¸° ì™”ë‹¤ëŠ” ê²ƒì€ broadcastí• ê²Œ ìˆë‹¤ëŠ” ëœ»
 
-        
-       pac.ClientNums = new int[connectedClients.Count + 1]; // ÇöÀç Á¢¼ÓÁßÀÎ Å¬¶ó¼ö + 1, +1Àº ³»°¡ ¸¶Áö¸·À¸·Î µé¾î°¥ ÀÚ¸® 0 1 2
+       pac.ClientNums = new int[connectedClients.Count + 1]; // í˜„ì¬ ì ‘ì†ì¤‘ì¸ í´ë¼ìˆ˜ + 1, +1ì€ ë‚´ê°€ ë§ˆì§€ë§‰ìœ¼ë¡œ ë“¤ì–´ê°ˆ ìë¦¬ 0 1 2
        //Debug.Log("connected count + 1 : " + (connectedClients.Count + 1));
        for (int i = 0; i <= ClientNum; i++) // 1
        {
             pac.ClientNums[i] = i;
        }
 
-
-
-       // À§Ä¡´Â Å¬¶ó¿¡¼­ Á÷Á¢ ÁöÁ¤
-       connectedClients.Add(ClientNum, clientEndPoint);  // Å¬¶ó ¹øÈ£ ÀúÀå
+       // ìœ„ì¹˜ëŠ” í´ë¼ì—ì„œ ì§ì ‘ ì§€ì •
+       connectedClients.Add(ClientNum, clientEndPoint);  // í´ë¼ ë²ˆí˜¸ ì €ì¥
        ClientNum++;
 
        return pac;
@@ -221,11 +217,12 @@ public class Server : MonoBehaviour
     {
 
     }
+
     [ContextMenu("DeBug/BroadcastAddPlayer")]
     void DebugBroadCast()
     {
         AddPlayerPacket pac = addPlayer();
-        // Ã³À½ Á¢¼Ó Å¬¶ó ¹øÈ£ ³Ñ°ÜÁÖ±â
+        // ì²˜ìŒ ì ‘ì† í´ë¼ ë²ˆí˜¸ ë„˜ê²¨ì£¼ê¸°
         EventPacket eventPacket = new EventPacket();
         eventPacket.clientNum = pac.ClientNum;
         eventPacket.eventType = EventType.JOIN_GAME;
@@ -234,7 +231,7 @@ public class Server : MonoBehaviour
         UniCast(buff, eventPacket.clientNum);
 
         receiveQue.Enqueue(pac);
-        // broadcast ¿ë ÆĞÅ¶¸¸µé¾î¼­ enque
+        // broadcast ìš© íŒ¨í‚·ë§Œë“¤ì–´ì„œ enque
         return;
     }
 }

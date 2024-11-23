@@ -16,6 +16,7 @@ MonoBehaviour:
     keys:
     - 
     - 9fc0d4010bbf28b4594072e72b8655ab
+    - 7261fe7129dcc6b4a8d5419217317272
     values:
     - goDatas_byGlobalId:
         keys:
@@ -35,3 +36,6 @@ MonoBehaviour:
           iconNameOrGuid: Camera Icon
         - colorIndex: 1
           iconNameOrGuid: DirectionalLight Icon
+    - goDatas_byGlobalId:
+        keys: []
+        values: []

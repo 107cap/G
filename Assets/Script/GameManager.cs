@@ -19,13 +19,13 @@ public class GameManager : MonoBehaviour
     IPacket tmpPacket;
     EventPacket eventPacket;
     PlayerPacket playerPacket;
-    AddPlayerPacket testAddPacket;
     //AddPlayerPacket addPlayerPacket;
 
     #region Singleton
     public static GameManager Instance;
     private void Awake()
     {
+        Application.targetFrameRate = 60;
         if (Instance != null)
         {
             Destroy(gameObject);
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
         JsonConvert.DefaultSettings = () => new JsonSerializerSettings
         {
-            TypeNameHandling = TypeNameHandling.All,  // Ÿ�� ���� ����
+            TypeNameHandling = TypeNameHandling.All,  //직렬화 설정
         };
     }
     #endregion
@@ -68,16 +68,6 @@ public class GameManager : MonoBehaviour
 
         networkManager.receiveQue.TryDequeue(out tmpPacket);
 
-        //AddPlayerPacket pac = tmpPacket as AddPlayerPacket;
-
-        if (testAddPacket != null)
-        {
-            testAddPacket = (AddPlayerPacket)tmpPacket;
-            foreach (var item in testAddPacket.ClientNums)
-            {
-                Debug.Log("오아시스 : " + item);
-            }
-        }
         if (tmpPacket != null)
         {
             //Debug.Log(tmpPacket.Type);
