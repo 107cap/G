@@ -10,7 +10,7 @@ using System.Collections.Concurrent;
 using Newtonsoft.Json;
 
 
-public class NetworkManager
+public class NetworkManager : MonoBehaviour
 {
     //TODO - 서버와 초기 접속이 될 시 자기 클라번호 저장해두기
     private static UdpClient udpClient;
@@ -58,9 +58,9 @@ public class NetworkManager
         byte[] buff = null;
         IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
 
-        for (int i = receiveQue.Count; i > 0; i--)
+        for (int i = sendQue.Count; i > 0; i--)
         {
-            receiveQue.TryDequeue(out packet);
+            sendQue.TryDequeue(out packet);
             switch (packet.Type)
             {
                 case (PacketType.PLAYER):

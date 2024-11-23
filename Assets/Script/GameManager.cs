@@ -8,11 +8,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [HideInInspector] public bool isStarting = true;
+
     int selfClientNum = -1;
     bool? isVictory = null;
     DateTime raceTime;
+    [SerializeField] float updateTime = 0.02f;
 
-    public NetworkManager networkManager = new NetworkManager();
+    public NetworkManager networkManager;
     public EventManager eventManager;
     
     //패킷 캐싱
@@ -48,6 +51,8 @@ public class GameManager : MonoBehaviour
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); }); 
 
         RequestJoin();
+
+        StartCoroutine(Process());
     }
 
     public GameObject playerPrefab;
@@ -59,54 +64,60 @@ public class GameManager : MonoBehaviour
         new Vector3(30f, 2f, 0f)
     };
 
-    void Update()
+    private IEnumerator Process()
     {
-        //Receive
-        networkManager.Receive();
-
-        #region Process
-
-        networkManager.receiveQue.TryDequeue(out tmpPacket);
-
-        if (tmpPacket != null)
+        while (true)
         {
-            //Debug.Log(tmpPacket.Type);
-            switch (tmpPacket.Type)
+            //Receive
+            networkManager.Receive();
+
+            #region Process
+
+            networkManager.receiveQue.TryDequeue(out tmpPacket);
+
+            if (tmpPacket != null)
             {
-                case PacketType.NONE:
-                    break;
-                case PacketType.PLAYER:
-                    if (!playerDict.Count.Equals(0))
-                    {
-                        playerPacket = (PlayerPacket)tmpPacket;
+                //Debug.Log(tmpPacket.Type);
+                switch (tmpPacket.Type)
+                {
+                    case PacketType.NONE:
+                        break;
+                    case PacketType.PLAYER:
+                        if (!playerDict.Count.Equals(0))
+                        {
+                            playerPacket = (PlayerPacket)tmpPacket;
 
-                        //Update other Player Position, Not send Updateed other Position
-                        if(!playerPacket.clientNum.Equals(selfClientNum))
-                            playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket);
-                    }
-                    break;
-                case PacketType.EVENT:
-                    //Debug.Log("스위치 작동");
-                    eventPacket = (EventPacket)tmpPacket;
-                    eventManager.Invoke(eventPacket.eventType);
-                    break;
-                case PacketType.ERROR:
-                    break;
-                default:
-                    break;
+                            //Update other Player Position, Not send Updateed other Position
+                            Debug.Log(selfClientNum);
+                            if (!playerPacket.clientNum.Equals(selfClientNum))
+                                playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket);
+                        }
+                        break;
+                    case PacketType.EVENT:
+                        //Debug.Log("스위치 작동");
+                        eventPacket = (EventPacket)tmpPacket;
+                        eventManager.Invoke(eventPacket.eventType);
+                        break;
+                    case PacketType.ERROR:
+                        break;
+                    default:
+                        break;
+                }
             }
+            #endregion
+
+            //Send
+            //본인 클라이언트의 좌표값은 항상 전송
+            if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
+                networkManager.sendQue.Enqueue(
+                    playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
+
+            networkManager.flush();
+
+            tmpPacket = null;
+
+            yield return new WaitForSeconds(updateTime);
         }
-        #endregion
-
-        //Send
-        //본인 클라이언트의 좌표값은 항상 전송
-        if(playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
-            networkManager.sendQue.Enqueue( 
-                playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
-
-        networkManager.Send();
-
-        tmpPacket = null;
     }
 
     void SetSelfClientNum() => selfClientNum = eventPacket.clientNum;
@@ -153,6 +164,7 @@ public class GameManager : MonoBehaviour
         //아무 패킷이나 보내서 UDP 연결
         EventPacket pac = new EventPacket();
         networkManager.sendQue.Enqueue(pac);
+        networkManager.flush();
         // broadcast 용 패킷만들어서 enque
         return;
     }

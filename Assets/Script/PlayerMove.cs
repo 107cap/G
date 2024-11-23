@@ -22,11 +22,9 @@ public class PlayerMove : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
-        //nowVelocity = GetComponent<Transform>().position;
 
         playerPacket = new PlayerPacket();
         packet = new PlayerPacket();
-        //Debug.Log("Awake : " + packet);
     }
     public PlayerPacket SelfPlayerUpdate(PlayerPacket playerPacket)
     {
@@ -40,9 +38,12 @@ public class PlayerMove : MonoBehaviour
         }
 
         //TODO - 로컬 변수 추가
-        Move();
-
-        playerPacket.SetPosition(movement);
+        if(GameManager.Instance.isStarting)
+        {
+            Move();
+            playerPacket.SetPosition(movement);
+            playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+        }
 
         return playerPacket;
     }
@@ -52,17 +53,8 @@ public class PlayerMove : MonoBehaviour
     {
         if (packet != null)
         {
-            //Debug.Log(playerPacket.GetPosition2Vec3() + " PlayerMove");
             transform.position += playerPacket.GetPosition2Vec3();
         }
-        //Debug.Log(packet);
-        //Debug.Log(nextPosition + "클라 nextPosition -> 다음 좌표");
-        //playerPacket.SetPosition((nowVelocity.x, nowVelocity.y, nowVelocity.z));
-
-
-        //입력에 의한 추가 이동
-        //TODO - 로컬 변수 추가
-        //Move();
 
         playerPacket.SetPosition(movement);
         
@@ -95,19 +87,4 @@ public class PlayerMove : MonoBehaviour
 
         //transform.Translate(movement, Space.World);
     }
-
-    //public string IPacketHandler.Serialize(Packet _packet)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
-
-    //Packet IPacketHandler.Deserialize(string data)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
-
-    //void IPacketHandler.Process()
-    //{
-    //    throw new System.NotImplementedException();
-    //}
 }
