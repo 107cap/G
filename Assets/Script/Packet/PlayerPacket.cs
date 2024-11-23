@@ -10,10 +10,14 @@ public class PlayerPacket : IPacket
         get => clientNum;
         set => clientNum = value;
     }
+    public long timestamp;
+
     public float x;
     public float y;
     public float z;
 
+    public PlayerPacket() { timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); }
+    
     public (float, float, float) GetPosition() => (x, y, z);
     public Vector3 GetPosition2Vec3() => new Vector3(x, y, z);
 

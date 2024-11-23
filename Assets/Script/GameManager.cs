@@ -64,13 +64,16 @@ public class GameManager : MonoBehaviour
         new Vector3(30f, 2f, 0f)
     };
 
+    private void Update()
+    {
+        //Receive
+        networkManager.Receive();
+    }
+
     private IEnumerator Process()
     {
         while (true)
         {
-            //Receive
-            networkManager.Receive();
-
             #region Process
 
             networkManager.receiveQue.TryDequeue(out tmpPacket);
