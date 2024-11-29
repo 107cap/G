@@ -66,19 +66,29 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-       
+        //Receive
+        networkManager.Receive();
+
     }
 
     private IEnumerator Process()
     {
         while (true)
         {
-            //Receive
-            networkManager.Receive();
+            //Send
+            //본인 클라이언트의 좌표값은 항상 전송
+            //if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
+            //    networkManager.sendQue.Enqueue(
+            //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
+
 
             #region Process
 
+            //Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
+
             networkManager.receiveQue.TryDequeue(out tmpPacket);
+
+            //Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
 
             if (tmpPacket != null)
             {
@@ -97,7 +107,7 @@ public class GameManager : MonoBehaviour
                             //Update other Player Position, Not send Updateed other Position
                             Debug.Log(selfClientNum);
                             if (!playerPacket.clientNum.Equals(selfClientNum))
-                                playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket);
+                                playerDict[playerPacket.ClientNum].MoveOther(playerPacket);
                         }
                         break;
                     case PacketType.EVENT:
@@ -113,14 +123,8 @@ public class GameManager : MonoBehaviour
             }
             #endregion
 
-            //Send
-            //본인 클라이언트의 좌표값은 항상 전송
-            //if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
-            //    networkManager.sendQue.Enqueue(
-            //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
-
-            if(playerDict.ContainsKey(selfClientNum))
-                playerDict[selfClientNum].DebugMoveSelf();
+            if (playerDict.ContainsKey(selfClientNum))
+                playerDict[selfClientNum].MoveSelf();
 
             networkManager.flush();
 
