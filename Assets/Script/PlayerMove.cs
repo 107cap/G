@@ -57,14 +57,22 @@ public class PlayerMove : MonoBehaviour
 
     public void MoveSelf()
     {
+        Debug.Log("MoveSelf");
         if (selfUpdate != null)
+        {
             StopCoroutine(selfUpdate);
 
+            //중도 정지 시, 현재까지의 위치 서버에 전송
+            playerPacket.SetPosition(movement);
+            playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+            GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
+        }
         selfUpdate = StartCoroutine(UpdateSelf());
     }
 
     public void MoveOther(PlayerPacket _pp)
     {
+        Debug.Log("MoveOther");
         if (otherUpdate != null)
             StopCoroutine(otherUpdate);
 
@@ -75,6 +83,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (_pp != null)
         {
+            Debug.Log("UpdateOther");
             float o_currentTime = 0;    //other
             float o_moveTime = 0.08f;
             Vector3 o_tmpPos;
@@ -103,6 +112,7 @@ public class PlayerMove : MonoBehaviour
 
     private IEnumerator UpdateSelf()
     {
+        Debug.Log("UpdateSelf");
         if (playerPacket == null)
             yield break;
 
