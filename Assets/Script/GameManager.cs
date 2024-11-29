@@ -69,6 +69,46 @@ public class GameManager : MonoBehaviour
         //Receive
         networkManager.Receive();
 
+        #region Process
+
+        Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
+
+        networkManager.receiveQue.TryDequeue(out tmpPacket);
+
+        Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
+
+        if (tmpPacket != null)
+        {
+            //Debug.Log(tmpPacket.Type);
+            switch (tmpPacket.Type)
+            {
+                case PacketType.NONE:
+                    break;
+                case PacketType.PLAYER:
+                    if (!playerDict.Count.Equals(0))
+                    {
+                        playerPacket = (PlayerPacket)tmpPacket;
+
+                        Debug.Log("프로세스 과정 : " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - playerPacket.timestamp));
+
+                        //Update other Player Position, Not send Updateed other Position
+                        Debug.Log(selfClientNum);
+                        if (!playerPacket.clientNum.Equals(selfClientNum))
+                            StartCoroutine(playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket));
+                    }
+                    break;
+                case PacketType.EVENT:
+                    //Debug.Log("스위치 작동");
+                    eventPacket = (EventPacket)tmpPacket;
+                    eventManager.Invoke(eventPacket.eventType);
+                    break;
+                case PacketType.ERROR:
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
     }
 
     private IEnumerator Process()
@@ -81,50 +121,10 @@ public class GameManager : MonoBehaviour
             //    networkManager.sendQue.Enqueue(
             //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
 
-
-            #region Process
-
-            Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
-
-            networkManager.receiveQue.TryDequeue(out tmpPacket);
-
-            Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
-
-            if (tmpPacket != null)
-            {
-                //Debug.Log(tmpPacket.Type);
-                switch (tmpPacket.Type)
-                {
-                    case PacketType.NONE:
-                        break;
-                    case PacketType.PLAYER:
-                        if (!playerDict.Count.Equals(0))
-                        {
-                            playerPacket = (PlayerPacket)tmpPacket;
-
-                            Debug.Log("프로세스 과정 : " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - playerPacket.timestamp));
-
-                            //Update other Player Position, Not send Updateed other Position
-                            Debug.Log(selfClientNum);
-                            if (!playerPacket.clientNum.Equals(selfClientNum))
-                                playerDict[playerPacket.ClientNum].MoveOther(playerPacket);
-                        }
-                        break;
-                    case PacketType.EVENT:
-                        //Debug.Log("스위치 작동");
-                        eventPacket = (EventPacket)tmpPacket;
-                        eventManager.Invoke(eventPacket.eventType);
-                        break;
-                    case PacketType.ERROR:
-                        break;
-                    default:
-                        break;
-                }
-            }
-            #endregion
-
-            if (playerDict.ContainsKey(selfClientNum))
-                playerDict[selfClientNum].MoveSelf();
+            if(playerDict.ContainsKey(selfClientNum))
+                StartCoroutine(
+                    playerDict[selfClientNum].DebugMoveSelf()
+                );
 
             networkManager.flush();
 
