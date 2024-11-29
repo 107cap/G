@@ -18,9 +18,6 @@ public class PlayerMove : MonoBehaviour
     Vector3 movement;
     //Vector3 nextPosition;
 
-    Coroutine selfUpdate = null;
-    Coroutine otherUpdate = null;
-
     //IPacket packet;
     //TODO - 서버와 연결 테스트 후 캡슐화하기
     public PlayerPacket playerPacket;
@@ -55,40 +52,14 @@ public class PlayerMove : MonoBehaviour
     //    return playerPacket;
     //}
 
-    public void MoveSelf()
-    {
-        Debug.Log("MoveSelf");
-        if (selfUpdate != null)
-        {
-            StopCoroutine(selfUpdate);
-
-            //중도 정지 시, 현재까지의 위치 서버에 전송
-            playerPacket.SetPosition(movement);
-            playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
-            GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
-        }
-        selfUpdate = StartCoroutine(UpdateSelf());
-    }
-
-    public void MoveOther(PlayerPacket _pp)
-    {
-        Debug.Log("MoveOther");
-        if (otherUpdate != null)
-            StopCoroutine(otherUpdate);
-
-        otherUpdate = StartCoroutine(UpdateOther(_pp));
-    }
-   
-    private IEnumerator UpdateOther(PlayerPacket _pp)
+    float o_currentTime = 0;    //other
+    float o_moveTime = 0.08f;
+    Vector3 o_tmpPos;
+    public IEnumerator OtherPlayerUpdate(PlayerPacket _pp)
     {
         if (_pp != null)
         {
-            Debug.Log("UpdateOther");
-            float o_currentTime = 0;    //other
-            float o_moveTime = 0.08f;
-            Vector3 o_tmpPos;
-
-            if (o_currentTime != 0)
+            if(o_currentTime != 0)
                 o_currentTime = 0;
 
             while (o_currentTime < o_moveTime)  //부드러운 이동 가능
@@ -106,19 +77,18 @@ public class PlayerMove : MonoBehaviour
                 o_tmpPos.y = transform.position.y;
                 transform.position = Vector3.Lerp(transform.position, o_tmpPos, o_currentTime / o_moveTime);
             }
+            o_currentTime = 0;
+            o_tmpPos = Vector3.zero;
         }
     }
 
-
-    private IEnumerator UpdateSelf()
+    float s_currentTime = 0;    //self
+    float s_moveTime = 0.08f;
+    Vector3 s_tmpPos;
+    public IEnumerator DebugMoveSelf()
     {
-        Debug.Log("UpdateSelf");
         if (playerPacket == null)
             yield break;
-
-        float s_currentTime = 0;    //self
-        float s_moveTime = 0.08f;
-        Vector3 s_tmpPos;
 
         //TODO - 로컬 변수 추가
         if (GameManager.Instance.isStarting)
@@ -143,7 +113,8 @@ public class PlayerMove : MonoBehaviour
                     s_tmpPos.y = transform.position.y;
                     transform.position = Vector3.Lerp(transform.position, s_tmpPos, s_currentTime / s_moveTime);
                 }
-
+                s_currentTime = 0;
+                s_tmpPos = Vector3.zero;
                 playerPacket.SetPosition(movement);
                 playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
                 GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
