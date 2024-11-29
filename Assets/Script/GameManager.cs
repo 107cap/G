@@ -84,11 +84,11 @@ public class GameManager : MonoBehaviour
 
             #region Process
 
-            Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
+            //Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
 
             networkManager.receiveQue.TryDequeue(out tmpPacket);
 
-            Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
+            //Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
 
             if (tmpPacket != null)
             {
