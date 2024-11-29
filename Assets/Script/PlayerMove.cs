@@ -6,7 +6,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
-using VFolders.Libs;
 
 public class PlayerMove : MonoBehaviour
 { 
@@ -105,9 +104,7 @@ public class PlayerMove : MonoBehaviour
 
                 o_tmpPos = transform.position + _pp.GetPosition2Vec3();
                 o_tmpPos.y = transform.position.y;
-                //Debug.LogWarning((transform.position - Vector3.Lerp(transform.position, o_tmpPos, o_currentTime / o_moveTime)).magnitude);
-                //transform.position = Vector3.MoveTowards(transform.position, Vector3.Lerp(transform.position, o_tmpPos, o_currentTime / o_moveTime), Time.deltaTime);
-                transform.position = Vector3.MoveTowards(transform.position, o_tmpPos, Time.deltaTime * 15);
+                transform.position = Vector3.Lerp(transform.position, o_tmpPos, o_currentTime / o_moveTime);
             }
         }
     }
@@ -144,7 +141,7 @@ public class PlayerMove : MonoBehaviour
 
                     s_tmpPos = transform.position + movement;
                     s_tmpPos.y = transform.position.y;
-                    transform.position = Vector3.MoveTowards(transform.position, s_tmpPos, Time.deltaTime * 15);
+                    transform.position = Vector3.Lerp(transform.position, s_tmpPos, s_currentTime / s_moveTime);
                 }
 
                 playerPacket.SetPosition(movement);
