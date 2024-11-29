@@ -66,53 +66,55 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-       
+        //Receive
+        networkManager.Receive();
+
+        #region Process
+
+        Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
+
+        networkManager.receiveQue.TryDequeue(out tmpPacket);
+
+        Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
+
+        if (tmpPacket != null)
+        {
+            //Debug.Log(tmpPacket.Type);
+            switch (tmpPacket.Type)
+            {
+                case PacketType.NONE:
+                    break;
+                case PacketType.PLAYER:
+                    if (!playerDict.Count.Equals(0))
+                    {
+                        playerPacket = (PlayerPacket)tmpPacket;
+
+                        Debug.Log("프로세스 과정 : " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - playerPacket.timestamp));
+
+                        //Update other Player Position, Not send Updateed other Position
+                        Debug.Log(selfClientNum);
+                        if (!playerPacket.clientNum.Equals(selfClientNum))
+                            StartCoroutine(playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket));
+                    }
+                    break;
+                case PacketType.EVENT:
+                    //Debug.Log("스위치 작동");
+                    eventPacket = (EventPacket)tmpPacket;
+                    eventManager.Invoke(eventPacket.eventType);
+                    break;
+                case PacketType.ERROR:
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
     }
 
     private IEnumerator Process()
     {
         while (true)
         {
-            //Receive
-            networkManager.Receive();
-
-            #region Process
-
-            networkManager.receiveQue.TryDequeue(out tmpPacket);
-
-            if (tmpPacket != null)
-            {
-                //Debug.Log(tmpPacket.Type);
-                switch (tmpPacket.Type)
-                {
-                    case PacketType.NONE:
-                        break;
-                    case PacketType.PLAYER:
-                        if (!playerDict.Count.Equals(0))
-                        {
-                            playerPacket = (PlayerPacket)tmpPacket;
-
-                            Debug.Log("프로세스 과정 : " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - playerPacket.timestamp));
-
-                            //Update other Player Position, Not send Updateed other Position
-                            Debug.Log(selfClientNum);
-                            if (!playerPacket.clientNum.Equals(selfClientNum))
-                                playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket);
-                        }
-                        break;
-                    case PacketType.EVENT:
-                        //Debug.Log("스위치 작동");
-                        eventPacket = (EventPacket)tmpPacket;
-                        eventManager.Invoke(eventPacket.eventType);
-                        break;
-                    case PacketType.ERROR:
-                        break;
-                    default:
-                        break;
-                }
-            }
-            #endregion
-
             //Send
             //본인 클라이언트의 좌표값은 항상 전송
             //if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
@@ -120,7 +122,9 @@ public class GameManager : MonoBehaviour
             //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
 
             if(playerDict.ContainsKey(selfClientNum))
-                playerDict[selfClientNum].DebugMoveSelf();
+                StartCoroutine(
+                    playerDict[selfClientNum].DebugMoveSelf()
+                );
 
             networkManager.flush();
 

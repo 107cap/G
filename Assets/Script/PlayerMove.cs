@@ -2,8 +2,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
 { 
@@ -50,40 +52,69 @@ public class PlayerMove : MonoBehaviour
     //    return playerPacket;
     //}
 
-
-    public PlayerPacket OtherPlayerUpdate(PlayerPacket _pp)
+    float o_currentTime = 0;    //other
+    float o_moveTime = 0.08f;
+    Vector3 o_tmpPos;
+    public IEnumerator OtherPlayerUpdate(PlayerPacket _pp)
     {
         if (_pp != null)
         {
-            transform.position += _pp.GetPosition2Vec3();
-        }
+            if(o_currentTime != 0)
+                o_currentTime = 0;
 
-        _pp.SetPosition(movement);
-        
-        return _pp; 
+            while (o_currentTime < o_moveTime)  //부드러운 이동 가능
+            {
+                if (o_currentTime >= o_moveTime)
+                {
+                    o_currentTime = o_moveTime;
+                }
+
+                yield return null;
+
+                o_currentTime += Time.deltaTime;
+
+                o_tmpPos = transform.position + _pp.GetPosition2Vec3();
+                o_tmpPos.y = transform.position.y;
+                transform.position = Vector3.Lerp(transform.position, o_tmpPos, o_currentTime / o_moveTime);
+            }
+            o_currentTime = 0;
+            o_tmpPos = Vector3.zero;
+        }
     }
 
-    public void DebugMoveSelf()
+    float s_currentTime = 0;    //self
+    float s_moveTime = 0.08f;
+    Vector3 s_tmpPos;
+    public IEnumerator DebugMoveSelf()
     {
-        //if (playerPacket == null)
-        //    playerPacket = new PlayerPacket();
-
-        //if (playerPacket != null)
-        //{
-        //    if (playerPacket.ClientNum == GameManager.Instance.GetSelfClientNum())
-        //        transform.position += playerPacket.GetPosition2Vec3();
-        //}
-
         if (playerPacket == null)
-            return;
+            yield break;
 
         //TODO - 로컬 변수 추가
         if (GameManager.Instance.isStarting)
         {
             if (Move())
             {
-                Debug.Log("Move : " + GameManager.Instance.networkManager.sendQue.Count);
-                transform.position += movement;
+                if (s_currentTime != 0)
+                    s_currentTime = 0;
+
+                while (s_currentTime < s_moveTime)  //부드러운 이동 가능
+                {
+                    if (s_currentTime >= s_moveTime)
+                    {
+                        s_currentTime = s_moveTime;
+                    }
+
+                    yield return null;
+
+                    s_currentTime += Time.deltaTime;
+
+                    s_tmpPos = transform.position + movement;
+                    s_tmpPos.y = transform.position.y;
+                    transform.position = Vector3.Lerp(transform.position, s_tmpPos, s_currentTime / s_moveTime);
+                }
+                s_currentTime = 0;
+                s_tmpPos = Vector3.zero;
                 playerPacket.SetPosition(movement);
                 playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
                 GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
