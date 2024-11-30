@@ -61,9 +61,9 @@ public class PlayerMove : MonoBehaviour
         {
             StopCoroutine(selfUpdate);
 
-            playerPacket.SetPosition(movement);
-            playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
-            GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
+            //playerPacket.SetPosition(movement);
+            //playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+            //GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
         }
 
         selfUpdate = StartCoroutine(UpdateSelf());

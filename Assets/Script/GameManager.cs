@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     int selfClientNum = -1;
     bool? isVictory = null;
     DateTime raceTime;
-    [SerializeField] float updateTime = 0.02f;
+    [SerializeField] float updateTime = 0.08f;
 
     public NetworkManager networkManager;
     public EventManager eventManager;
@@ -120,6 +120,8 @@ public class GameManager : MonoBehaviour
             //if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
             //    networkManager.sendQue.Enqueue(
             //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
+
+            
 
             if (playerDict.ContainsKey(selfClientNum))
                 playerDict[selfClientNum].MoveSelf();
