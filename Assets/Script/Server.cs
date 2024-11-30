@@ -169,7 +169,7 @@ public class Server : MonoBehaviour
                 pac.SetPosition(pac.GetPosition2Vec3());
                 if (pac.clientNum == 1 || pac.clientNum == 0)
                 {
-                    Debug.Log("Client Num = " + pac.clientNum);
+                    //Debug.Log("Client Num = " + pac.clientNum);
                     pac.timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 }
                 packet = (IPacket)pac;

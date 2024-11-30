@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 
     public NetworkManager networkManager;
     public EventManager eventManager;
-    
+
     //패킷 캐싱
     IPacket tmpPacket;
     EventPacket eventPacket;
@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
-        eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); }); 
+        eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
 
         RequestJoin();
 
@@ -71,11 +71,11 @@ public class GameManager : MonoBehaviour
 
         #region Process
 
-        Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
+        //Debug.LogWarning("시작 패킷 수 : " + networkManager.receiveQue.Count);
 
         networkManager.receiveQue.TryDequeue(out tmpPacket);
 
-        Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
+        //Debug.LogWarning("남은 처리 패킷 수 : " + networkManager.receiveQue.Count);
 
         if (tmpPacket != null)
         {
@@ -89,12 +89,12 @@ public class GameManager : MonoBehaviour
                     {
                         playerPacket = (PlayerPacket)tmpPacket;
 
-                        Debug.Log("프로세스 과정 : " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - playerPacket.timestamp));
+                        //Debug.Log("프로세스 과정 : " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - playerPacket.timestamp));
 
                         //Update other Player Position, Not send Updateed other Position
-                        Debug.Log(selfClientNum);
+                        //Debug.Log(selfClientNum);
                         if (!playerPacket.clientNum.Equals(selfClientNum))
-                            StartCoroutine(playerDict[playerPacket.ClientNum].OtherPlayerUpdate(playerPacket));
+                            playerDict[playerPacket.ClientNum].MoveOther(playerPacket);
                     }
                     break;
                 case PacketType.EVENT:
@@ -121,10 +121,8 @@ public class GameManager : MonoBehaviour
             //    networkManager.sendQue.Enqueue(
             //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
 
-            if(playerDict.ContainsKey(selfClientNum))
-                StartCoroutine(
-                    playerDict[selfClientNum].DebugMoveSelf()
-                );
+            if (playerDict.ContainsKey(selfClientNum))
+                playerDict[selfClientNum].MoveSelf();
 
             networkManager.flush();
 
@@ -156,10 +154,10 @@ public class GameManager : MonoBehaviour
             CreatePlayer(addPlayerPacket.ClientNums[i], sponPositions[i]);
         }
     }
-    
+
     void CreatePlayer(int clientNum, Vector3 position)
     {
-       // Debug.Log("createPlayer.num : " + clientNum);
+        // Debug.Log("createPlayer.num : " + clientNum);
 
         //Early return;
         if (playerDict.ContainsKey(clientNum))

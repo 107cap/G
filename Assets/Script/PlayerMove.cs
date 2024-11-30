@@ -8,7 +8,7 @@ using UnityEngine.Playables;
 using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
-{ 
+{
 
     [SerializeField] int id;
     [SerializeField] float maxSpeed;
@@ -16,6 +16,7 @@ public class PlayerMove : MonoBehaviour
 
     Rigidbody m_Rigidbody;
     Vector3 movement;
+    Vector3 backupPos;
     //Vector3 nextPosition;
 
     //IPacket packet;
@@ -51,16 +52,48 @@ public class PlayerMove : MonoBehaviour
 
     //    return playerPacket;
     //}
+    Coroutine selfUpdate = null;
+    Coroutine otherUpdate = null;
 
-    float o_currentTime = 0;    //other
-    float o_moveTime = 0.08f;
-    Vector3 o_tmpPos;
-    public IEnumerator OtherPlayerUpdate(PlayerPacket _pp)
+    public void MoveSelf()
     {
+        if (selfUpdate != null)
+        {
+            StopCoroutine(selfUpdate);
+
+            playerPacket.SetPosition(movement);
+            playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+            GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);
+        }
+
+        selfUpdate = StartCoroutine(UpdateSelf());
+    }
+
+    public void MoveOther(PlayerPacket _pp)
+    {
+        if (otherUpdate != null)
+            StopCoroutine(otherUpdate);
+
+        otherUpdate = StartCoroutine(UpdateOther(_pp));
+    }
+
+    private IEnumerator UpdateOther(PlayerPacket _pp)
+    {
+        double o_currentTime = 0;    //other
+        double o_moveTime = 0.08f;
+        Vector3 o_tmpPos;
         if (_pp != null)
         {
-            if(o_currentTime != 0)
+            if (o_currentTime != 0)
                 o_currentTime = 0;
+
+            o_tmpPos = (otherUpdate != null ? backupPos : transform.position) // 코루틴 중첩 실행 시 ?백업 좌표 :현재 좌표 o_tmpPos = 
+                + _pp.GetPosition2Vec3();
+            Debug.Log("패킷 안에 pos : " + _pp.GetPosition2Vec3());
+            o_tmpPos.y = 2;
+
+            backupPos = o_tmpPos;
+            Debug.Log("BackUp pos" + backupPos);
 
             while (o_currentTime < o_moveTime)  //부드러운 이동 가능
             {
@@ -73,20 +106,21 @@ public class PlayerMove : MonoBehaviour
 
                 o_currentTime += Time.deltaTime;
 
-                o_tmpPos = transform.position + _pp.GetPosition2Vec3();
-                o_tmpPos.y = transform.position.y;
-                transform.position = Vector3.Lerp(transform.position, o_tmpPos, o_currentTime / o_moveTime);
+
+                //Debug.Log("other Pos : " + o_tmpPos);
+
+                transform.position = Vector3.Lerp(transform.position, o_tmpPos, (float)(o_currentTime / o_moveTime));
             }
-            o_currentTime = 0;
-            o_tmpPos = Vector3.zero;
         }
     }
 
-    float s_currentTime = 0;    //self
-    float s_moveTime = 0.08f;
-    Vector3 s_tmpPos;
-    public IEnumerator DebugMoveSelf()
+
+    private IEnumerator UpdateSelf()
     {
+        double s_currentTime = 0;    //self
+        double s_moveTime = 0.08f;
+        Vector3 s_tmpPos;
+
         if (playerPacket == null)
             yield break;
 
@@ -97,6 +131,9 @@ public class PlayerMove : MonoBehaviour
             {
                 if (s_currentTime != 0)
                     s_currentTime = 0;
+
+                s_tmpPos = transform.position + movement;
+                s_tmpPos.y = transform.position.y;
 
                 while (s_currentTime < s_moveTime)  //부드러운 이동 가능
                 {
@@ -109,12 +146,10 @@ public class PlayerMove : MonoBehaviour
 
                     s_currentTime += Time.deltaTime;
 
-                    s_tmpPos = transform.position + movement;
-                    s_tmpPos.y = transform.position.y;
-                    transform.position = Vector3.Lerp(transform.position, s_tmpPos, s_currentTime / s_moveTime);
+
+                    Debug.Log("My Pos : " + s_tmpPos);
+                    transform.position = Vector3.Lerp(transform.position, s_tmpPos, (float)(s_currentTime / s_moveTime));
                 }
-                s_currentTime = 0;
-                s_tmpPos = Vector3.zero;
                 playerPacket.SetPosition(movement);
                 playerPacket.clientNum = GameManager.Instance.GetSelfClientNum();
                 GameManager.Instance.networkManager.sendQue.Enqueue(playerPacket);

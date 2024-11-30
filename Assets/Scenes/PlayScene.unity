@@ -1232,7 +1232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStarting: 1
-  updateTime: 0.02
+  updateTime: 0.08
   networkManager: {fileID: 754938094}
   eventManager: {fileID: 815880716}
   playerPrefab: {fileID: 2765122830200538229, guid: 3fe8f8a62ba581246adc90cce619d6ad, type: 3}
