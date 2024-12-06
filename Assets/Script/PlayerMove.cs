@@ -188,4 +188,13 @@ public class PlayerMove : MonoBehaviour
 
         //transform.Translate(movement, Space.World);
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            movement += gameObject.GetComponent<Wall>().ReflectionPos();
+            MoveSelf();
+        }
+    }
 }
