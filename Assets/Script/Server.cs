@@ -25,6 +25,11 @@ public class Server : MonoBehaviour
     int receiveClientNum = 0;
     float raceTime;
     IPEndPoint clientEndPoint;
+
+    [SerializeField]
+    int maxClientNum = 0;
+
+    bool[] isreadyPlayers;
     // 서버 딕셔너리 (recrive que 삭제)
 
     #region Singleton
@@ -57,6 +62,8 @@ public class Server : MonoBehaviour
                                                //비동기식(비블로킹 모드): 소켓이 데이터를 기다리지 않고 바로 반환되며, 데이터가 오면 별도의 작업을 통해 처리.
             udpServer.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true); //추가
             clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            isreadyPlayers = new bool[maxClientNum];
+            initReadyArray();
             StartCoroutine(TempThread());
         }
         catch (Exception e)
@@ -68,7 +75,11 @@ public class Server : MonoBehaviour
 
 
     // Update is called once per frame
-   
+   void initReadyArray()
+    {
+        for (int i = 0; i < maxClientNum; i++)
+            isreadyPlayers[i] = false;
+    }
 
 
     void setraceTime()
@@ -207,11 +218,37 @@ public class Server : MonoBehaviour
                         break;
                 }
             }
+
+            else if (packet.Type == PacketType.READY)
+            {
+                ReadyPacket pac = packet as ReadyPacket;
+                isreadyPlayers[pac.clientNum] = true;
+
+                if (checkAllReady())
+                {
+                    EventPacket startracePacket = new EventPacket();
+                    startracePacket.eventType = EventType.START_RACE;
+                    packet = (IPacket)startracePacket;
+                }
+
+                else
+                    return;
+            }
         }
         if (packet != null)
         {
             sendQue.Enqueue(packet); // 패킷 que에 넣기
         }
+    }
+
+    bool checkAllReady()
+    {
+        for (int i = 0; i<maxClientNum; i++)
+        {
+            if (isreadyPlayers[i] == false)
+                return false;
+        }
+        return true;
     }
 
     void flush()

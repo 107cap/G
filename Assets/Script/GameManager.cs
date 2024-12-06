@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [HideInInspector] public bool isStarting = false;
+    public bool isStarting = false;
     bool isPlayScene = false;
 
     int selfClientNum = -1;
@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("Start : " + isStarting);
         if (SceneManager.GetActiveScene().name.Equals("PlayScene"))
         {
             isPlayScene = true;
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour
         }
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
-        eventManager.Register(EventType.START_RACE, () => { isStarting = true; });
+        eventManager.Register(EventType.START_RACE, () => { isStarting = true; Debug.Log("start 패킷 받음");  });
 
         //RequestJoin();
 
@@ -126,6 +127,7 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
+            Debug.Log(isStarting);
             //Send
             //본인 클라이언트의 좌표값은 항상 전송
             //if (playerDict.ContainsKey(selfClientNum))    //본인 클라이언트가 존재 시
@@ -136,6 +138,7 @@ public class GameManager : MonoBehaviour
 
             if (isStarting)
             {
+                Debug.Log("!!!");
                 if (playerDict.ContainsKey(selfClientNum))
                     playerDict[selfClientNum].MoveSelf();
             }
@@ -143,8 +146,9 @@ public class GameManager : MonoBehaviour
             {
                 if (isPlayScene)
                 {
+                    Debug.Log("@@@");
                     ReadyPacket readyPacket = new ReadyPacket();
-                    //readyPacket.SetIsReady(_UIManager.GetIsReady());
+                    readyPacket.SetIsReady(_UIManager.getisReady());
                     readyPacket.clientNum = GetSelfClientNum();
                     networkManager.sendQue.Enqueue(playerPacket);
                 }

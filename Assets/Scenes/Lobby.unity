@@ -1244,7 +1244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cb8a5536e43517459b1575f90728365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStarting: 1
+  isStarting: 0
   updateTime: 0.08
   networkManager: {fileID: 715481692}
   eventManager: {fileID: 715481695}
@@ -1454,6 +1454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0a22f218913334aadc9357cf38cacb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxClientNum: 0
 --- !u!4 &787145230
 Transform:
   m_ObjectHideFlags: 0
