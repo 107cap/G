@@ -236,6 +236,7 @@ public class Server : MonoBehaviour
                                             // 여기 왔다는 것은 broadcast할게 있다는 뜻
         clientsName.Add(ClientNum, addplayerPac.nickName);
         addplayerPac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리 0 1 2
+        addplayerPac.ClientNames = new string[connectedClients.Count + 1];
        //Debug.Log("connected count + 1 : " + (connectedClients.Count + 1));
        for (int i = 0; i <= ClientNum; i++) // 1
        {
@@ -247,7 +248,7 @@ public class Server : MonoBehaviour
 
             else
             {
-                Debug.Log($"{i} : {addplayerPac.ClientNames[i]}");
+                Debug.Log($"server client num :[{i}], {addplayerPac.ClientNames[i]}");
             }
        }
 

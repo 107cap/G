@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject playerPrefab;
     Dictionary<int, PlayerMove> playerDict = new Dictionary<int, PlayerMove>();
+    Dictionary<int, string> playerNames = new Dictionary<int, string>();
     Vector3[] sponPositions = new Vector3[] {
         new Vector3(0f, 2f, 0f),
         new Vector3(10f, 2f, 0f),
@@ -153,11 +154,12 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < addPlayerPacket.ClientNums.Length; i++)
         {
             //Debug.Log("create 전 num값 : " + addPlayerPacket.ClientNums[i]);
-            CreatePlayer(addPlayerPacket.ClientNums[i], sponPositions[i]);
+            CreatePlayer(addPlayerPacket.ClientNums[i], sponPositions[i], addPlayerPacket.ClientNames[i]);
+            Debug.Log($"Client{addPlayerPacket.clientNum} : {addPlayerPacket.nickName}");
         }
     }
 
-    void CreatePlayer(int clientNum, Vector3 position)
+    void CreatePlayer(int clientNum, Vector3 position, string Nickname)
     {
         // Debug.Log("createPlayer.num : " + clientNum);
 
@@ -170,6 +172,7 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(playerPrefab);
         player.transform.position = position;
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());
+        playerNames.Add(clientNum, Nickname);
     }
 
     [ContextMenu("DeBug/RequestJoin")]
@@ -178,7 +181,7 @@ public class GameManager : MonoBehaviour
         //아무 패킷이나 보내서 UDP 연결
         AddPlayerPacket pac = new AddPlayerPacket(); // addplayerpacket으로 수정!!!
         pac.eventType = EventType.ADD_PLAYER;
-        // nickname 추가 코드 필요!
+        pac.nickName = "개똥벌레";
         networkManager.sendQue.Enqueue(pac);
         networkManager.flush();
         // broadcast 용 패킷만들어서 enque
