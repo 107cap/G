@@ -7,7 +7,7 @@ public static class Constants
 
 
 /// <summary>
-/// ¼­¹ö¿¡¼­ Å¬¶ó·Î ¸í·ÉÇÏ´Â ÀÌº¥Æ®
+/// ì„œë²„ì—ì„œ í´ë¼ë¡œ ëª…ë ¹í•˜ëŠ” ì´ë²¤íŠ¸
 /// </summary>
 public enum EventType
 {
@@ -28,5 +28,6 @@ public enum PacketType
 
     //---------
     PLAYER = 4,
-    EVENT = 5
+    EVENT = 5,
+    READY = 6
 }

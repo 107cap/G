@@ -5,10 +5,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [HideInInspector] public bool isStarting = true;
+    [HideInInspector] public bool isStarting = false;
+    bool isPlayScene = false;
 
     int selfClientNum = -1;
     bool? isVictory = null;
@@ -17,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     public NetworkManager networkManager;
     public EventManager eventManager;
+    UIManager _UIManager;
 
     //패킷 캐싱
     IPacket tmpPacket;
@@ -47,8 +51,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if (SceneManager.GetActiveScene().name.Equals("PlayScene"))
+        {
+            isPlayScene = true;
+            _UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        }
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
+        eventManager.Register(EventType.START_RACE, () => { isStarting = true; });
 
         //RequestJoin();
 
@@ -122,11 +132,23 @@ public class GameManager : MonoBehaviour
             //    networkManager.sendQue.Enqueue(
             //        playerDict[selfClientNum].SelfPlayerUpdate(playerPacket));
 
-            
 
-            if (playerDict.ContainsKey(selfClientNum))
-                playerDict[selfClientNum].MoveSelf();
 
+            if (isStarting)
+            {
+                if (playerDict.ContainsKey(selfClientNum))
+                    playerDict[selfClientNum].MoveSelf();
+            }
+            else
+            {
+                if (isPlayScene)
+                {
+                    ReadyPacket readyPacket = new ReadyPacket();
+                    //readyPacket.SetIsReady(_UIManager.GetIsReady());
+                    readyPacket.clientNum = GetSelfClientNum();
+                    networkManager.sendQue.Enqueue(playerPacket);
+                }
+            }
             networkManager.flush();
 
             tmpPacket = null;
