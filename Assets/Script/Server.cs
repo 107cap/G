@@ -223,7 +223,7 @@ public class Server : MonoBehaviour
             {
                 ReadyPacket pac = packet as ReadyPacket;
                 Debug.Log("server cLIENT nUM" + pac.ClientNum);
-                isreadyPlayers[pac.clientNum] = true;
+                isreadyPlayers[pac.clientNum] = pac.isReady;
 
                 if (checkAllReady())
                 {
