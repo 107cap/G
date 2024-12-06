@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
 
-        RequestJoin();
+        //RequestJoin();
 
         StartCoroutine(Process());
     }
@@ -173,11 +173,12 @@ public class GameManager : MonoBehaviour
     }
 
     [ContextMenu("DeBug/RequestJoin")]
-    void RequestJoin()
+    public void RequestJoin(string nickName)
     {
         //아무 패킷이나 보내서 UDP 연결
         AddPlayerPacket pac = new AddPlayerPacket(); // addplayerpacket으로 수정!!!
         pac.eventType = EventType.ADD_PLAYER;
+        pac.nickName = nickName;
         // nickname 추가 코드 필요!
         networkManager.sendQue.Enqueue(pac);
         networkManager.flush();
