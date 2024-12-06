@@ -87,6 +87,14 @@ public class NetworkManager : MonoBehaviour
                         buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
                         break;
                 }
+
+                case (PacketType.READY):
+                {
+                        ReadyPacket pac = packet as ReadyPacket;
+                        buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
+                        break;
+                }
+
             }
             udpClient.Send(buff, buff.Length, serverEndPoint);
         }

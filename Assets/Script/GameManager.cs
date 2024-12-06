@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour
                     ReadyPacket readyPacket = new ReadyPacket();
                     readyPacket.SetIsReady(_UIManager.getisReady());
                     readyPacket.clientNum = GetSelfClientNum();
-                    networkManager.sendQue.Enqueue(playerPacket);
+                    networkManager.sendQue.Enqueue(readyPacket);
                 }
             }
             networkManager.flush();
