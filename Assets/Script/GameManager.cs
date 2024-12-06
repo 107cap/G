@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
 
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
-        eventManager.Register(EventType.START_RACE, () => { isStarting = true; Debug.Log("start 패킷 받음");  });
+        eventManager.Register(EventType.START_RACE, () => { Debug.Log("start 패킷 받음");  });
 
         //RequestJoin();
 

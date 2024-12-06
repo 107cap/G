@@ -21,6 +21,8 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.eventManager.Register(EventType.START_RACE, StartCount);
+
         // 시작시 체크/X 버튼 초기화, isReady = false
         isReady = false;
         ReadyBtn = GameObject.Find("ReadyBtn");
@@ -43,6 +45,7 @@ public class UIManager : MonoBehaviour
     {
         StartCoroutine(onReady());
         
+        
     }
 
     // 카운트다운 처리 Coroutine
@@ -62,6 +65,7 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         Ready.SetActive(false);
         startTime = DateTime.Now;
+        GameManager.Instance.isStarting = true;
     }
 
     public void ReadyBtnClick()
