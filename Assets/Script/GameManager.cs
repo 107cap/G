@@ -144,7 +144,7 @@ public class GameManager : MonoBehaviour
 
             if (isStarting)
             {
-                Debug.Log("!!!");
+                //Debug.Log("!!!");
                 if (playerDict.ContainsKey(selfClientNum))
                     playerDict[selfClientNum].MoveSelf();
             }

@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour
     Rigidbody m_Rigidbody;
     Vector3 movement;
     Vector3 backupPos;
+    Vector3 backupColVec;
     //Vector3 nextPosition;
 
     //IPacket packet;
@@ -180,6 +181,8 @@ public class PlayerMove : MonoBehaviour
         }
 
         movement = new Vector3(moveHorizontal, 0.0f, moveVertical);//.normalized * minSpeed * Time.deltaTime;
+        movement += backupColVec;
+        backupColVec = Vector3.zero;
 
         if (movement.Equals(Vector3.zero))
             return false;
@@ -188,13 +191,24 @@ public class PlayerMove : MonoBehaviour
 
         //transform.Translate(movement, Space.World);
     }
-
+    /*
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            movement += gameObject.GetComponent<Wall>().ReflectionPos();
-            MoveSelf();
+            Debug.Log("나님 작동");
+            backupColVec = Vector3.forward * 50;
+            //MoveSelf();
+        }
+    }
+    */
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log("나님 작동");
+            backupColVec = Vector3.forward * 50;
+            //MoveSelf();
         }
     }
 }
