@@ -5,5 +5,6 @@ using UnityEngine;
 public class AddPlayerPacket : EventPacket
 {
     public int[] ClientNums;
-
+    public string nickName;
+    public string[] ClientNames;
 }

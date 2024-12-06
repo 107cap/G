@@ -20,11 +20,32 @@ public class Server : MonoBehaviour
     private static Dictionary<int, IPEndPoint> connectedClients = new Dictionary<int, IPEndPoint>();
     ConcurrentQueue<IPacket> sendQue = new ConcurrentQueue<IPacket>();
     ConcurrentQueue<IPacket> receiveQue = new ConcurrentQueue<IPacket>();
+    private static Dictionary<int, string> clientsName = new Dictionary<int, string>();
     int ClientNum = 0;
     int receiveClientNum = 0;
     float raceTime;
     IPEndPoint clientEndPoint;
     // 서버 딕셔너리 (recrive que 삭제)
+
+    #region Singleton
+    public static Server Instance;
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All,  //직렬화 설정
+        };
+    }
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -145,7 +166,8 @@ public class Server : MonoBehaviour
         //Debug.Log("Receive Packet");
         if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
-            AddPlayerPacket pac = addPlayer();
+            //AddPlayerPacket playerpac = packet as AddPlayerPacket;
+            AddPlayerPacket pac = addPlayer(packet);
             //Debug.Log("@@@");
             // 처음 접속 클라 번호 넘겨주기
             EventPacket eventPacket = new EventPacket();
@@ -205,26 +227,35 @@ public class Server : MonoBehaviour
         // setraceTime();
     }
 
-    AddPlayerPacket addPlayer()
+    AddPlayerPacket addPlayer(IPacket packet)
     {
-        AddPlayerPacket pac = new AddPlayerPacket();
-        pac.eventType = EventType.ADD_PLAYER;
-        pac.ClientNum = ClientNum; // 1
-        // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
-        // 여기 왔다는 것은 broadcast할게 있다는 뜻
-
-       pac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리 0 1 2
+        AddPlayerPacket addplayerPac = packet as AddPlayerPacket;
+        // addplayerPac.eventType = EventType.ADD_PLAYER;
+        addplayerPac.ClientNum = ClientNum; // 1
+                                            // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
+                                            // 여기 왔다는 것은 broadcast할게 있다는 뜻
+        clientsName.Add(ClientNum, addplayerPac.nickName);
+        addplayerPac.ClientNums = new int[connectedClients.Count + 1]; // 현재 접속중인 클라수 + 1, +1은 내가 마지막으로 들어갈 자리 0 1 2
        //Debug.Log("connected count + 1 : " + (connectedClients.Count + 1));
        for (int i = 0; i <= ClientNum; i++) // 1
        {
-            pac.ClientNums[i] = i;
+            addplayerPac.ClientNums[i] = i;
+            if (!clientsName.TryGetValue(i, out addplayerPac.ClientNames[i]))
+            {
+                Debug.Log($"{i} Fail tryget clientnames");
+            }
+
+            else
+            {
+                Debug.Log($"{i} : {addplayerPac.ClientNames[i]}");
+            }
        }
 
        // 위치는 클라에서 직접 지정
        connectedClients.Add(ClientNum, clientEndPoint);  // 클라 번호 저장
        ClientNum++;
 
-       return pac;
+       return addplayerPac;
     }
 
 
@@ -248,20 +279,5 @@ public class Server : MonoBehaviour
 
     }
 
-    [ContextMenu("DeBug/BroadcastAddPlayer")]
-    void DebugBroadCast()
-    {
-        AddPlayerPacket pac = addPlayer();
-        // 처음 접속 클라 번호 넘겨주기
-        EventPacket eventPacket = new EventPacket();
-        eventPacket.clientNum = pac.ClientNum;
-        eventPacket.eventType = EventType.JOIN_GAME;
-        byte[] buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(eventPacket));
-        
-        UniCast(buff, eventPacket.clientNum);
-
-        receiveQue.Enqueue(pac);
-        // broadcast 용 패킷만들어서 enque
-        return;
-    }
+   
 }

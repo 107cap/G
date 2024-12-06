@@ -176,7 +176,9 @@ public class GameManager : MonoBehaviour
     void RequestJoin()
     {
         //아무 패킷이나 보내서 UDP 연결
-        EventPacket pac = new EventPacket();
+        AddPlayerPacket pac = new AddPlayerPacket(); // addplayerpacket으로 수정!!!
+        pac.eventType = EventType.ADD_PLAYER;
+        // nickname 추가 코드 필요!
         networkManager.sendQue.Enqueue(pac);
         networkManager.flush();
         // broadcast 용 패킷만들어서 enque
