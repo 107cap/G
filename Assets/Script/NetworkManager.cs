@@ -16,14 +16,14 @@ public class NetworkManager : MonoBehaviour
     private static UdpClient udpClient;
     private static string serverIP = "192.168.0.252";
     private static int serverPort = 8080;
-    private static int localPort = 0;
+    //private static int localPort = 0;
     public ConcurrentQueue<IPacket> sendQue = new ConcurrentQueue<IPacket>();
     public ConcurrentQueue<IPacket> receiveQue = new ConcurrentQueue<IPacket>();
 
     public void SetConnectionInfo(string ip, string port)
     {
         serverIP = ip;
-        localPort = int.Parse(port);
+        serverPort = int.Parse(port);
     }
 
     public NetworkManager()
