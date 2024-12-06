@@ -67,6 +67,12 @@ public class NetworkManager : MonoBehaviour
         for (int i = sendQue.Count; i > 0; i--)
         {
             sendQue.TryDequeue(out packet);
+
+            if (packet == null)
+            {
+                return;
+            }
+
             switch (packet.Type)
             {
                 case (PacketType.PLAYER):
