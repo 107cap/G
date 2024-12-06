@@ -20,6 +20,12 @@ public class NetworkManager : MonoBehaviour
     public ConcurrentQueue<IPacket> sendQue = new ConcurrentQueue<IPacket>();
     public ConcurrentQueue<IPacket> receiveQue = new ConcurrentQueue<IPacket>();
 
+    public void SetConnectionInfo(string ip, string port)
+    {
+        serverIP = ip;
+        localPort = int.Parse(port);
+    }
+
     public NetworkManager()
     {
         udpClient = new UdpClient();
