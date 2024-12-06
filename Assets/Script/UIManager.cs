@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,13 +13,15 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] GameObject Ready;
     [SerializeField] TMP_Text ReadyText;
-    
+    [SerializeField] Text raceTime;
+    private DateTime startTime;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        // ½ÃÀÛ½Ã Ã¼Å©/X ¹öÆ° ÃÊ±âÈ­, isReady = false
+        // ì‹œì‘ì‹œ ì²´í¬/X ë²„íŠ¼ ì´ˆê¸°í™”, isReady = false
         isReady = false;
         ReadyBtn = GameObject.Find("ReadyBtn");
         ReadyBtn.GetComponent<Image>().sprite = sprites[1];
@@ -27,30 +30,38 @@ public class UIManager : MonoBehaviour
         Ready = GameObject.Find("Ready");
         Ready.SetActive(true);
         ReadyText = Ready.GetComponent<TMP_Text>();
+        
     }
 
-    // Ä«¿îÆ® Ã³¸® ÇÔ¼ö, ÇØ´ç ÇÔ¼ö È£Ãâ ¹Ù¶÷
+    public bool getisReady()
+    {
+        return isReady;
+    }
+
+    // ì¹´ìš´íŠ¸ ì²˜ë¦¬ í•¨ìˆ˜, í•´ë‹¹ í•¨ìˆ˜ í˜¸ì¶œ ë°”ëŒ
     public void StartCount()
     {
         StartCoroutine(onReady());
         
     }
 
-    // Ä«¿îÆ®´Ù¿î Ã³¸® Coroutine
+    // ì¹´ìš´íŠ¸ë‹¤ìš´ ì²˜ë¦¬ Coroutine
     private IEnumerator onReady()
     {
         int countdownValue = 3;
 
         while (countdownValue > 0)
         {
-            ReadyText.text = countdownValue.ToString(); // ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®
-            yield return new WaitForSeconds(1f); // 1ÃÊ ´ë±â
-            countdownValue--; // Ä«¿îÆ® °¨¼Ò
+            ReadyText.text = countdownValue.ToString(); // í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+            yield return new WaitForSeconds(1f); // 1ì´ˆ ëŒ€ê¸°
+            countdownValue--; // ì¹´ìš´íŠ¸ ê°ì†Œ
         }
         
         ReadyText.text = "START!!!";
+        
         yield return new WaitForSeconds(0.5f);
         Ready.SetActive(false);
+        startTime = DateTime.Now;
     }
 
     public void ReadyBtnClick()
@@ -66,5 +77,16 @@ public class UIManager : MonoBehaviour
             ReadyBtn.GetComponent<Image>().sprite = sprites[1];
             ReadyBtn.GetComponent<Image>().color = Color.red;
         }
+    }
+
+    private void calculateRaceTime()
+    {
+        TimeSpan timer = DateTime.Now - startTime;
+        int minutes = timer.Minutes; // ë¶„ ê³„ì‚°
+        int seconds = timer.Seconds; // ì´ˆ ê³„ì‚°
+        int milliseconds = timer.Milliseconds; // ë°€ë¦¬ì´ˆ ê³„ì‚°
+
+        // íƒ€ì´ë¨¸ í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+        raceTime.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
     }
 }
