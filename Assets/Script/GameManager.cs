@@ -51,12 +51,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Start : " + isStarting);
-        if (SceneManager.GetActiveScene().name.Equals("PlayScene"))
-        {
-            isPlayScene = true;
-            _UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
-        }
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
         eventManager.Register(EventType.START_RACE, () => { isStarting = true; Debug.Log("start 패킷 받음");  });
@@ -64,6 +60,16 @@ public class GameManager : MonoBehaviour
         //RequestJoin();
 
         StartCoroutine(Process());
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Start : " + isStarting);
+        if (SceneManager.GetActiveScene().name.Equals("PlayScene"))
+        {
+            isPlayScene = true;
+            _UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        }
     }
 
     public GameObject playerPrefab;
