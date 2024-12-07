@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     DateTime raceTime;
     [SerializeField] float updateTime = 0.08f;
     [SerializeField] float zendPoint = 10;
-    [SerializeField] int maxClientNum = 1;
+    //[SerializeField] int maxClientNum = 1;
     int rank = 0;
     public NetworkManager networkManager;
     public EventManager eventManager;
@@ -131,7 +131,8 @@ public class GameManager : MonoBehaviour
         }
         #endregion
 
-        checkEndPoint();
+        if (isPlayScene && !playerDict.Count.Equals(0))
+            checkEndPoint();
     }
 
     private void checkEndPoint()
