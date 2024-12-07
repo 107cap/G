@@ -16,7 +16,7 @@ public class PlayerCamera : MonoBehaviour
     // 예시: 특정 이벤트 발생 시 흔들림 호출
     public void TriggerShake()
     {
-        StartCoroutine(Shake(0.4f, 0.3f)); // 0.5초 동안 흔들림 강도 0.3
+        StartCoroutine(Shake(0.2f, 0.3f)); // 0.5초 동안 흔들림 강도 0.3
     }
 
     public IEnumerator Shake(float duration, float magnitude)
