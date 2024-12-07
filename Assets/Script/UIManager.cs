@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] GameObject ReadyBtn;
     [SerializeField] Sprite[] sprites;
-    [SerializeField] bool isReady;
+    bool isReady = false;
 
     [SerializeField] GameObject Ready;
     [SerializeField] TMP_Text ReadyText;
@@ -24,15 +24,15 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.eventManager.Register(EventType.START_RACE, StartCount);
 
         // 시작시 체크/X 버튼 초기화, isReady = false
-        isReady = false;
-        ReadyBtn = GameObject.Find("ReadyBtn");
+        //isReady = false;
+        //ReadyBtn = GameObject.Find("ReadyBtn");
         ReadyBtn.GetComponent<Image>().sprite = sprites[1];
         ReadyBtn.GetComponent<Image>().color = Color.red;
 
-        Ready = GameObject.Find("Ready");
+        //Ready = GameObject.Find("Ready");
         Ready.SetActive(true);
-        ReadyText = Ready.GetComponent<TMP_Text>();
-        raceTime = GameObject.Find("raceTime").GetComponent<Text>();
+        //ReadyText = Ready.GetComponent<TMP_Text>();
+        //raceTime = GameObject.Find("raceTime").GetComponent<Text>();
         
     }
 
@@ -80,6 +80,7 @@ public class UIManager : MonoBehaviour
         isReady = !isReady;
         if(isReady)
         {
+            ReadyBtn.GetComponent<Button>().interactable = false;
             ReadyBtn.GetComponent<Image>().sprite = sprites[0];
             ReadyBtn.GetComponent<Image>().color = Color.green;
         }
