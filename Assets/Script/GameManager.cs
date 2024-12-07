@@ -222,6 +222,16 @@ public class GameManager : MonoBehaviour
             CreatePlayer(addPlayerPacket.ClientNums[i], sponPositions[i], addPlayerPacket.ClientNames[i]);
             //Debug.Log($"Client{addPlayerPacket.clientNum} : {addPlayerPacket.nickName}");
         }
+        addCamera();
+    }
+
+    void addCamera()
+    {
+        Debug.Log("addCamera");
+        GameObject camera = Camera.main.gameObject;
+
+        PlayerCamera playerCam = camera.AddComponent<PlayerCamera>();
+        playerCam.player = playerDict[GetSelfClientNum()].gameObject;
     }
 
     void CreatePlayer(int clientNum, Vector3 position, string Nickname)
