@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class PlayerMove : MonoBehaviour
 {
 
-    [SerializeField] int id;
+    public int id = -1;
     [SerializeField] float maxSpeed;
     [SerializeField] float minSpeed;
 
@@ -204,6 +204,9 @@ public class PlayerMove : MonoBehaviour
     */
     private void OnTriggerEnter(Collider other)
     {
+        if (!GameManager.Instance.GetSelfClientNum().Equals(id))
+            return;
+
         if (other.gameObject.CompareTag("Wall"))
         {
             Debug.Log("나님 작동");

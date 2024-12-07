@@ -246,7 +246,7 @@ public class GameManager : MonoBehaviour
         player.transform.position = position;
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());
         playerNames.Add(clientNum, Nickname);
-
+        playerDict[clientNum].id = clientNum;
 
         //스폰 색 변경
         MeshRenderer m_render;

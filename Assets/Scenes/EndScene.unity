@@ -1759,6 +1759,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ourGod: {fileID: 1316186733}
+  blackImg: {fileID: 746296033}
+  thxTMP: {fileID: 1855184}
 --- !u!4 &1663733047
 Transform:
   m_ObjectHideFlags: 0
