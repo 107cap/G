@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     bool isPlayScene = false;
 
     int selfClientNum = -1;
-    bool? isVictory = null;
     DateTime raceTime;
     [SerializeField] float updateTime = 0.08f;
     [SerializeField] float zendPoint = 10;
@@ -23,7 +22,7 @@ public class GameManager : MonoBehaviour
     public NetworkManager networkManager;
     public EventManager eventManager;
     UIManager _UIManager;
-    bool[] isEnd;
+    bool isEnd = false;
 
     //패킷 캐싱
     IPacket tmpPacket;
@@ -56,7 +55,6 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        isEnd = new bool[maxClientNum];
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
         //eventManager.Register(EventType.START_RACE, () => {});
@@ -138,16 +136,17 @@ public class GameManager : MonoBehaviour
 
     private void checkEndPoint()
     {
-        for (int i = 0; i < playerDict.Count; i++)
+        if (!isEnd)
         {
-            if (playerDict[i].gameObject.transform.position.z >= zendPoint && isEnd[i] == false)
+            if (playerDict[selfClientNum].gameObject.transform.position.z >= zendPoint)
             {
-                isEnd[i] = true;
+                isEnd = true;
+
                 EndPacket packet = new EndPacket();
                 packet.clientNum = selfClientNum;
                 packet.SetisEnd(true);
                 networkManager.sendQue.Enqueue(packet);
-                Debug.Log($"{i} : END");
+                //Debug.Log($"{i} : END");
                 return;
             }
         }
@@ -167,7 +166,7 @@ public class GameManager : MonoBehaviour
 
 
 
-            if (isStarting && isEnd[selfClientNum] == false)
+            if (isStarting && !isEnd)
             {
                 //Debug.Log("!!!");
                 if (playerDict.ContainsKey(selfClientNum))
