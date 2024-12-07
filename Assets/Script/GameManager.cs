@@ -58,11 +58,17 @@ public class GameManager : MonoBehaviour
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
         //eventManager.Register(EventType.START_RACE, () => {});
-        eventManager.Register(EventType.END_RACE, () => { networkManager.ClaerQue(); SceneManager.LoadScene("EndScene"); });
+        eventManager.Register(EventType.END_RACE, () => { networkManager.ClaerQue(); StartCoroutine(MoveEndScene_Delay(0.5f)); });
 
         //RequestJoin();
 
         StartCoroutine(Process());
+    }
+
+    private IEnumerator MoveEndScene_Delay(float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        SceneManager.LoadScene("EndScene");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
