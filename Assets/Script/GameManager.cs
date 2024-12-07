@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
         //eventManager.Register(EventType.START_RACE, () => {});
-        eventManager.Register(EventType.END_RACE, () => { SceneManager.LoadScene("EndScene"); });
+        eventManager.Register(EventType.END_RACE, () => { networkManager.ClaerQue(); SceneManager.LoadScene("EndScene"); });
 
         //RequestJoin();
 

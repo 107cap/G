@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] TMP_Text ReadyText;
     [SerializeField] Text raceTime;
     private DateTime startTime;
-
+    bool start = false;
 
 
     // Start is called before the first frame update
@@ -70,6 +70,7 @@ public class UIManager : MonoBehaviour
         
         yield return new WaitForSeconds(0.5f);
         Ready.SetActive(false);
+        start = true;
         startTime = DateTime.Now;
         GameManager.Instance.isStarting = true;
     }
@@ -91,12 +92,16 @@ public class UIManager : MonoBehaviour
 
     private void calculateRaceTime()
     {
-        TimeSpan timer = DateTime.Now - startTime;
-        int minutes = timer.Minutes; // 분 계산
-        int seconds = timer.Seconds; // 초 계산
-        int milliseconds = timer.Milliseconds; // 밀리초 계산
+         TimeSpan timer = DateTime.Now - startTime;
+            int minutes = timer.Minutes; // 분 계산
+            int seconds = timer.Seconds; // 초 계산
+            int milliseconds = timer.Milliseconds; // 밀리초 계산
 
         // 타이머 텍스트 업데이트
-        raceTime.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
+        if (start)
+        {
+            raceTime.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
+        }
+        
     }
 }
