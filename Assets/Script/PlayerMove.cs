@@ -208,6 +208,7 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.Log("나님 작동");
             backupColVec = other.gameObject.GetComponent<Wall>().ReflectionPos();
+            Camera.main.GetComponent<PlayerCamera>().TriggerShake();
             //MoveSelf();
         }
     }
