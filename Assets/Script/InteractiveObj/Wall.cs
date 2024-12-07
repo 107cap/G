@@ -26,7 +26,7 @@ public class Wall : MonoBehaviour
     public WallType wallType;
     public Pos posType;
 
-    public float refForce;
+    public float refForce = 10;
     public float rotationSpeed;
 
     public bool isTurn;
@@ -76,7 +76,7 @@ public class Wall : MonoBehaviour
                 break;
         }
 
-        return pos*refForce;
+        return pos * refForce;
     }
 
     void TurnWall()

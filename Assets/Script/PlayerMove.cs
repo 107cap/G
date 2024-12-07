@@ -207,7 +207,7 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.CompareTag("Wall"))
         {
             Debug.Log("나님 작동");
-            backupColVec = Vector3.forward * 50;
+            backupColVec = other.gameObject.GetComponent<Wall>().ReflectionPos();
             //MoveSelf();
         }
     }

@@ -120,4 +120,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallType: 0
   posType: 0
-  refForce: 30
+  refForce: 10
+  rotationSpeed: 0
+  isTurn: 0

@@ -1673,7 +1673,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallType: 0
   posType: 2
-  refForce: 30
+  refForce: 10
   rotationSpeed: 0
   isTurn: 0
 --- !u!65 &1331634755
@@ -2439,7 +2439,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallType: 1
   posType: 0
-  refForce: 30
+  refForce: 10
   rotationSpeed: 0
   isTurn: 0
 --- !u!65 &1835570585
@@ -2641,7 +2641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallType: 1
   posType: 3
-  refForce: 30
+  refForce: 10
   rotationSpeed: 0
   isTurn: 0
 --- !u!65 &2077656904

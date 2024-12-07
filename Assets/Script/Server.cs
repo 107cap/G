@@ -25,9 +25,10 @@ public class Server : MonoBehaviour
     int receiveClientNum = 0;
     float raceTime;
     IPEndPoint clientEndPoint;
+    bool isready = false;
 
     [SerializeField]
-    int maxClientNum = 0;
+    int maxClientNum = 1;
 
     bool[] isreadyPlayers;
     // 서버 딕셔너리 (recrive que 삭제)
@@ -177,6 +178,7 @@ public class Server : MonoBehaviour
         //Debug.Log("Receive Packet");
         if (!connectedClients.ContainsValue(clientEndPoint)) // 처음 접속
         {
+            Debug.Log("New player");
             //AddPlayerPacket playerpac = packet as AddPlayerPacket;
             AddPlayerPacket pac = addPlayer(packet);
             //Debug.Log("@@@");
@@ -222,11 +224,12 @@ public class Server : MonoBehaviour
             else if (packet.Type == PacketType.READY)
             {
                 ReadyPacket pac = packet as ReadyPacket;
-                Debug.Log("server cLIENT nUM" + pac.ClientNum);
+               // Debug.Log("server cLIENT nUM" + pac.ClientNum);
                 isreadyPlayers[pac.clientNum] = pac.isReady;
 
-                if (checkAllReady())
+                if (checkAllReady() && isready == false)
                 {
+                    isready = true;
                     EventPacket startracePacket = new EventPacket();
                     startracePacket.eventType = EventType.START_RACE;
                     packet = (IPacket)startracePacket;
@@ -234,6 +237,7 @@ public class Server : MonoBehaviour
 
                 else
                     return;
+
             }
         }
         if (packet != null)
@@ -281,12 +285,12 @@ public class Server : MonoBehaviour
             addplayerPac.ClientNums[i] = i;
             if (!clientsName.TryGetValue(i, out addplayerPac.ClientNames[i]))
             {
-                Debug.Log($"{i} Fail tryget clientnames");
+                //Debug.Log($"{i} Fail tryget clientnames");
             }
 
             else
             {
-                Debug.Log($"server client num :[{i}], {addplayerPac.ClientNames[i]}");
+                //Debug.Log($"server client num :[{i}], {addplayerPac.ClientNames[i]}");
             }
        }
 
