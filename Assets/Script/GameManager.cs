@@ -59,8 +59,8 @@ public class GameManager : MonoBehaviour
         isEnd = new bool[maxClientNum];
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
-        eventManager.Register(EventType.START_RACE, () => {});
-        eventManager.Register(EventType.END_RACE, () => { Debuging(); });
+        //eventManager.Register(EventType.START_RACE, () => {});
+        eventManager.Register(EventType.END_RACE, () => { SceneManager.LoadScene("EndScene"); });
 
         //RequestJoin();
 
@@ -134,11 +134,6 @@ public class GameManager : MonoBehaviour
         #endregion
 
         checkEndPoint();
-    }
-
-    void Debuging()
-    {
-        Debug.Log("Debug");
     }
 
     private void checkEndPoint()
