@@ -1246,6 +1246,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isStarting: 0
   updateTime: 0.08
+  zendPoint: 10
+  maxClientNum: 1
   networkManager: {fileID: 715481692}
   eventManager: {fileID: 715481695}
   playerPrefab: {fileID: 2765122830200538229, guid: 3fe8f8a62ba581246adc90cce619d6ad, type: 3}
@@ -1454,7 +1456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0a22f218913334aadc9357cf38cacb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxClientNum: 2
+  maxClientNum: 1
 --- !u!4 &787145230
 Transform:
   m_ObjectHideFlags: 0

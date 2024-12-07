@@ -17,16 +17,18 @@ public class GameManager : MonoBehaviour
     bool? isVictory = null;
     DateTime raceTime;
     [SerializeField] float updateTime = 0.08f;
-
+    [SerializeField] float zendPoint = 10;
+    [SerializeField] int maxClientNum = 1;
+    int rank = 0;
     public NetworkManager networkManager;
     public EventManager eventManager;
     UIManager _UIManager;
+    bool[] isEnd;
 
     //패킷 캐싱
     IPacket tmpPacket;
     EventPacket eventPacket;
     PlayerPacket playerPacket;
-    GameObject m_Player;
     //AddPlayerPacket addPlayerPacket;
 
     #region Singleton
@@ -54,11 +56,12 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
 
+        isEnd = new bool[maxClientNum];
         eventManager.Register(EventType.ADD_PLAYER, () => { AddPlayers(); });
         eventManager.Register(EventType.JOIN_GAME, () => { SetSelfClientNum(); });
-        eventManager.Register(EventType.START_RACE, () => { Debug.Log("start 패킷 받음");  });
+        eventManager.Register(EventType.START_RACE, () => {});
+        eventManager.Register(EventType.END_RACE, () => { Debuging(); });
 
-        //m_Player = GameObject.
         //RequestJoin();
 
         StartCoroutine(Process());
@@ -130,13 +133,29 @@ public class GameManager : MonoBehaviour
         }
         #endregion
 
-
+        checkEndPoint();
     }
 
+    void Debuging()
+    {
+        Debug.Log("Debug");
+    }
 
     private void checkEndPoint()
     {
-
+        for (int i = 0; i < playerDict.Count; i++)
+        {
+            if (playerDict[i].gameObject.transform.position.z >= zendPoint && isEnd[i] == false)
+            {
+                isEnd[i] = true;
+                EndPacket packet = new EndPacket();
+                packet.clientNum = selfClientNum;
+                packet.SetisEnd(true);
+                networkManager.sendQue.Enqueue(packet);
+                Debug.Log($"{i} : END");
+                return;
+            }
+        }
     }
 
 
@@ -153,7 +172,7 @@ public class GameManager : MonoBehaviour
 
 
 
-            if (isStarting)
+            if (isStarting && isEnd[selfClientNum] == false)
             {
                 //Debug.Log("!!!");
                 if (playerDict.ContainsKey(selfClientNum))

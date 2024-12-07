@@ -26,7 +26,8 @@ public class Server : MonoBehaviour
     float raceTime;
     IPEndPoint clientEndPoint;
     bool isready = false;
-
+    bool isEnd = false;
+    bool[] isAllEnd;
     [SerializeField]
     int maxClientNum = 1;
 
@@ -64,6 +65,7 @@ public class Server : MonoBehaviour
             udpServer.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true); //추가
             clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
             isreadyPlayers = new bool[maxClientNum];
+            isAllEnd = new bool[maxClientNum];
             initReadyArray();
             StartCoroutine(TempThread());
         }
@@ -239,11 +241,38 @@ public class Server : MonoBehaviour
                     return;
 
             }
+
+            else if (packet.Type == PacketType.END)
+            {
+                EndPacket pac = packet as EndPacket;
+                isAllEnd[pac.clientNum] = pac.isEnd;
+
+                if (checkAllEnd() && isEnd == false)
+                {
+                    isEnd = true;
+                    EventPacket endracePacket = new EventPacket();
+                    endracePacket.eventType = EventType.END_RACE;
+                    packet = (IPacket)endracePacket;
+                }
+
+                else 
+                    return;
+            }
         }
         if (packet != null)
         {
             sendQue.Enqueue(packet); // 패킷 que에 넣기
         }
+    }
+
+    private bool checkAllEnd()
+    {
+        for (int i = 0; i < maxClientNum; i++)
+        {
+            if (isAllEnd[i] == false)
+                return false;
+        }
+        return true;
     }
 
     bool checkAllReady()

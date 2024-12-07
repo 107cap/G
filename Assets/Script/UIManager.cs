@@ -32,6 +32,7 @@ public class UIManager : MonoBehaviour
         Ready = GameObject.Find("Ready");
         Ready.SetActive(true);
         ReadyText = Ready.GetComponent<TMP_Text>();
+        raceTime = GameObject.Find("raceTime").GetComponent<Text>();
         
     }
 
@@ -46,6 +47,11 @@ public class UIManager : MonoBehaviour
         StartCoroutine(onReady());
         
         
+    }
+
+    public void Update()
+    {
+        calculateRaceTime();
     }
 
     // 카운트다운 처리 Coroutine

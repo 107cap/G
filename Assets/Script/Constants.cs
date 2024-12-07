@@ -29,5 +29,6 @@ public enum PacketType
     //---------
     PLAYER = 4,
     EVENT = 5,
-    READY = 6
+    READY = 6,
+    END = 7,
 }

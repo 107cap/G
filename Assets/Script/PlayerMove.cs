@@ -148,7 +148,7 @@ public class PlayerMove : MonoBehaviour
                     s_currentTime += Time.deltaTime;
 
 
-                    Debug.Log("My Pos : " + s_tmpPos);
+                    //Debug.Log("My Pos : " + s_tmpPos);
                     transform.position = Vector3.Lerp(transform.position, s_tmpPos, (float)(s_currentTime / s_moveTime));
                 }
                 playerPacket.SetPosition(movement);

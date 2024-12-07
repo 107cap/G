@@ -95,6 +95,12 @@ public class NetworkManager : MonoBehaviour
                         break;
                 }
 
+                case (PacketType.END):
+                {
+                        EndPacket pac = packet as EndPacket;
+                        buff = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pac));
+                        break;
+                }
             }
             udpClient.Send(buff, buff.Length, serverEndPoint);
         }
@@ -130,8 +136,8 @@ public class NetworkManager : MonoBehaviour
             if (packet != null)
             {
                 receiveQue.Enqueue(packet);
-                if (packet.Type == PacketType.PLAYER)
-                    Debug.Log("리시브 시점 - " + "번호 : " + packet.ClientNum + ", " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - ((PlayerPacket)packet).timestamp));
+                //if (packet.Type == PacketType.PLAYER)
+                    //Debug.Log("리시브 시점 - " + "번호 : " + packet.ClientNum + ", " + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - ((PlayerPacket)packet).timestamp));
             }
         }
     }
