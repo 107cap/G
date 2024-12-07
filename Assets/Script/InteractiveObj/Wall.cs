@@ -43,10 +43,10 @@ public class Wall : MonoBehaviour
         switch (wallType)
         {
             case WallType.Basic:
-                m_Material.color = Color.yellow;
+                m_Material.color = new Color32(224, 211, 136, 255);
                 break;
             case WallType.Reflection:
-                m_Material.color = new Color(0.5f, 0.0f, 0.5f);
+                m_Material.color = new Color32(214, 157, 214, 255);
                 break;
         }
     }

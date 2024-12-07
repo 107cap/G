@@ -42,14 +42,14 @@ public class SpeedObject : MonoBehaviour
 
         if (speedType == SpeedType.Up)
         {
-            curColor = Color.blue;
+            curColor = new Color32(97, 97, 236, 255);
         }
         else if (speedType == SpeedType.Down)
         {
-            curColor = Color.red;
+            curColor = new Color32(215, 123, 123, 255);
         }
 
-        curColor.a = 0.3f;
+        //curColor.a = 1f;
 
         m_material.color = curColor;
     }

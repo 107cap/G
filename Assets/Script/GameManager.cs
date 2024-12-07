@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
     PlayerPacket playerPacket;
     //AddPlayerPacket addPlayerPacket;
 
+    [SerializeField] Color32[] PlayerColors;
+
     #region Singleton
     public static GameManager Instance;
     private void Awake()
@@ -85,10 +87,10 @@ public class GameManager : MonoBehaviour
     Dictionary<int, PlayerMove> playerDict = new Dictionary<int, PlayerMove>();
     Dictionary<int, string> playerNames = new Dictionary<int, string>();
     Vector3[] sponPositions = new Vector3[] {
-        new Vector3(0f, 2f, 0f),
-        new Vector3(10f, 2f, 0f),
-        new Vector3(20f, 2f, 0f),
-        new Vector3(30f, 2f, 0f)
+        new Vector3(-8f, 2f, 0f),
+        new Vector3(-4f, 2f, 0f),
+        new Vector3(4f, 2f, 0f),
+        new Vector3(8f, 2f, 0f)
     };
 
     private void Update()
@@ -236,6 +238,15 @@ public class GameManager : MonoBehaviour
         player.transform.position = position;
         playerDict.Add(clientNum, player.GetComponent<PlayerMove>());
         playerNames.Add(clientNum, Nickname);
+
+
+        //스폰 색 변경
+        MeshRenderer m_render;
+        Material m_material;
+        m_render = player.GetComponent<MeshRenderer>();
+        m_material = m_render.material;
+
+        m_material.color = PlayerColors[clientNum];
     }
 
     [ContextMenu("DeBug/RequestJoin")]

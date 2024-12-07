@@ -1249,6 +1249,15 @@ MonoBehaviour:
   zendPoint: 10
   networkManager: {fileID: 715481692}
   eventManager: {fileID: 715481695}
+  PlayerColors:
+  - serializedVersion: 2
+    rgba: 4289781888
+  - serializedVersion: 2
+    rgba: 4291067867
+  - serializedVersion: 2
+    rgba: 4285230036
+  - serializedVersion: 2
+    rgba: 4292116861
   playerPrefab: {fileID: 2765122830200538229, guid: 3fe8f8a62ba581246adc90cce619d6ad, type: 3}
 --- !u!4 &715481694
 Transform:
