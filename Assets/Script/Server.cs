@@ -29,7 +29,7 @@ public class Server : MonoBehaviour
     bool isEnd = false;
     bool[] isAllEnd;
     [SerializeField]
-    int maxClientNum = 1;
+    int maxClientNum;
 
     bool[] isreadyPlayers;
     // 서버 딕셔너리 (recrive que 삭제)
