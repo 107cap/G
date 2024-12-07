@@ -4,17 +4,12 @@ using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
     public GameObject player;
-    private Vector3 offset;
+    [SerializeField] private Vector3 offset;
     public bool isShake;
-
-    void Start()
-    {
-        offset = transform.position - player.transform.position;
-    }
 
     void LateUpdate()
     {
-        if (!isShake)
+        if (!isShake && player != null)
             transform.position = player.transform.position + offset;
     }
 
