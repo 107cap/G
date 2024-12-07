@@ -141,4 +141,10 @@ public class NetworkManager : MonoBehaviour
             }
         }
     }
+
+    public void ClaerQue()
+    {
+        sendQue.Clear();
+        receiveQue.Clear();
+    }
 }
