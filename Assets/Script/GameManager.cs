@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     int selfClientNum = -1;
     DateTime raceTime;
     [SerializeField] float updateTime = 0.08f;
-    [SerializeField] float zendPoint = 10;
+    [SerializeField] float zendPoint = 193;
     //[SerializeField] int maxClientNum = 1;
     int rank = 0;
     public NetworkManager networkManager;
