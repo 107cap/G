@@ -1246,7 +1246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isStarting: 0
   updateTime: 0.08
-  zendPoint: 20
+  zendPoint: 193
   networkManager: {fileID: 715481692}
   eventManager: {fileID: 715481695}
   PlayerColors:
