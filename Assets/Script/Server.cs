@@ -28,8 +28,7 @@ public class Server : MonoBehaviour
     bool isready = false;
     bool isEnd = false;
     bool[] isAllEnd;
-    [SerializeField]
-    int maxClientNum;
+    int maxClientNum = 2;
 
     bool[] isreadyPlayers;
     // 서버 딕셔너리 (recrive que 삭제)
@@ -204,11 +203,6 @@ public class Server : MonoBehaviour
             {
                 PlayerPacket pac = packet as PlayerPacket;
                 pac.SetPosition(pac.GetPosition2Vec3());
-                if (pac.clientNum == 1 || pac.clientNum == 0)
-                {
-                    //Debug.Log("Client Num = " + pac.clientNum);
-                    pac.timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                }
                 packet = (IPacket)pac;
             }
 
@@ -228,7 +222,7 @@ public class Server : MonoBehaviour
                 ReadyPacket pac = packet as ReadyPacket;
                // Debug.Log("server cLIENT nUM" + pac.ClientNum);
                 isreadyPlayers[pac.clientNum] = pac.isReady;
-
+                Debug.Log("ReadyPacket 왔다");
                 if (checkAllReady() && isready == false)
                 {
                     isready = true;
@@ -302,7 +296,8 @@ public class Server : MonoBehaviour
     {
         AddPlayerPacket addplayerPac = packet as AddPlayerPacket;
         // addplayerPac.eventType = EventType.ADD_PLAYER;
-        addplayerPac.ClientNum = ClientNum; // 1
+        addplayerPac.ClientNum = ClientNum;
+        Debug.Log(ClientNum);
                                             // 배열 값 설정은 if 딕셔너리에 값 1이라도 있으면 && 처음 접속이면
                                             // 여기 왔다는 것은 broadcast할게 있다는 뜻
         clientsName.Add(ClientNum, addplayerPac.nickName);

@@ -83,6 +83,11 @@ public class UIManager : MonoBehaviour
             ReadyBtn.GetComponent<Button>().interactable = false;
             ReadyBtn.GetComponent<Image>().sprite = sprites[0];
             ReadyBtn.GetComponent<Image>().color = Color.green;
+
+            ReadyPacket readyPacket = new ReadyPacket();
+            readyPacket.SetIsReady(getisReady());
+            readyPacket.clientNum = GameManager.Instance.GetSelfClientNum();
+            GameManager.Instance.networkManager.sendQue.Enqueue(readyPacket);
         }
         else
         {
