@@ -1467,7 +1467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0a22f218913334aadc9357cf38cacb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxClientNum: 1
+  maxClientNum: 2
 --- !u!4 &787145230
 Transform:
   m_ObjectHideFlags: 0
