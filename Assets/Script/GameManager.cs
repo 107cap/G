@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject playerPrefab;
     Dictionary<int, PlayerMove> playerDict = new Dictionary<int, PlayerMove>();
-    Dictionary<int, string> playerNames = new Dictionary<int, string>();
+    public Dictionary<int, string> playerNames = new Dictionary<int, string>();
     Vector3[] sponPositions = new Vector3[] {
         new Vector3(-8f, 2f, 0f),
         new Vector3(-4f, 2f, 0f),
