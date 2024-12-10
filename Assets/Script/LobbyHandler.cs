@@ -20,7 +20,7 @@ public class LobbyHandler : MonoBehaviour
             GameManager.Instance.networkManager.SetConnectionInfo(ip_Address.text, portNum.text);
             GameManager.Instance.RequestJoin(nickName.text);
 
-            SceneManager.LoadScene("PlayScene");
+            SceneManager.LoadScene("Map_1");
         }
         catch (System.Exception)
         {

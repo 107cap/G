@@ -787,7 +787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08960f2684c7ca47a010e11d6337e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallType: 1
+  wallType: 3
   posType: 3
   refForce: 10
   rotationSpeed: 0
@@ -1045,7 +1045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallType: 1
-  posType: 3
+  posType: 2
   refForce: 10
   rotationSpeed: 0
   isTurn: 0
@@ -1361,7 +1361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallType: 1
-  posType: 3
+  posType: 2
   refForce: 10
   rotationSpeed: 0
   isTurn: 0
@@ -1818,7 +1818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08960f2684c7ca47a010e11d6337e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallType: 1
+  wallType: 2
   posType: 0
   refForce: 10
   rotationSpeed: 0
@@ -2046,7 +2046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallType: 1
-  posType: 3
+  posType: 2
   refForce: 10
   rotationSpeed: 0
   isTurn: 0
@@ -2711,7 +2711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08960f2684c7ca47a010e11d6337e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallType: 1
+  wallType: 5
   posType: 0
   refForce: 10
   rotationSpeed: 0
@@ -2834,7 +2834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08960f2684c7ca47a010e11d6337e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallType: 1
+  wallType: 6
   posType: 3
   refForce: 10
   rotationSpeed: 0
@@ -3834,7 +3834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8704511353285898907, guid: a20fc5feaf5f30945ac9871281284b08, type: 3}
       propertyPath: wallType
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4132,7 +4132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallType: 1
-  posType: 3
+  posType: 2
   refForce: 10
   rotationSpeed: 0
   isTurn: 0

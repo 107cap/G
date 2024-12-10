@@ -6,7 +6,12 @@ using UnityEngine;
 public enum WallType
 {
     Basic,
-    Reflection
+    Reflection,
+    Red,
+    Blue,
+    Green,
+    Yellow,
+    Purple
 }
 
 public enum Pos
@@ -47,6 +52,21 @@ public class Wall : MonoBehaviour
                 break;
             case WallType.Reflection:
                 m_Material.color = new Color32(214, 157, 214, 255);
+                break;
+            case WallType.Red:
+                m_Material.color = new Color32(230, 160, 160, 255);
+                break;
+            case WallType.Blue:
+                m_Material.color = new Color32(160, 160, 230, 255);
+                break;
+            case WallType.Green:
+                m_Material.color = new Color32(160, 230, 160, 255);
+                break;
+            case WallType.Yellow:
+                m_Material.color = new Color32(230, 230,160, 255);
+                break;
+            case WallType.Purple:
+                m_Material.color = new Color32(230, 160, 230, 255);
                 break;
         }
     }

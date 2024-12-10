@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         //Debug.Log("Start : " + isStarting);
-        if (SceneManager.GetActiveScene().name.Equals("PlayScene"))
+        if (SceneManager.GetActiveScene().name.Equals("Map_1"))
         {
             isPlayScene = true;
             _UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
