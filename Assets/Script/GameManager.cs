@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 {
     public bool isStarting = false;
     bool isPlayScene = false;
-
+    bool sendReady = false;
     int selfClientNum = -1;
     DateTime raceTime;
     [SerializeField] float updateTime = 0.08f;
@@ -183,13 +183,11 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                if (isPlayScene)
+                if (isPlayScene && !sendReady)
                 {
                     //Debug.Log("@@@");
-                    ReadyPacket readyPacket = new ReadyPacket();
-                    readyPacket.SetIsReady(_UIManager.getisReady());
-                    readyPacket.clientNum = GetSelfClientNum();
-                    networkManager.sendQue.Enqueue(readyPacket);
+                    sendReady = true;
+                   
                 }
             }
             networkManager.flush();
