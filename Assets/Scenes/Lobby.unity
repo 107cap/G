@@ -1301,6 +1301,9 @@ MonoBehaviour:
   AddPlayer:
     m_PersistentCalls:
       m_Calls: []
+  UpdateRank:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &726703425
 GameObject:
   m_ObjectHideFlags: 0

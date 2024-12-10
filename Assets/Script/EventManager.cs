@@ -9,19 +9,21 @@ public class EventManager : MonoBehaviour
     [SerializeField] UnityEvent StartRace;
     [SerializeField] UnityEvent EndRace;
     [SerializeField] UnityEvent AddPlayer;
+    [SerializeField] UnityEvent UpdateRank;
 
     public Dictionary<EventType, UnityEvent> eventDict;
 
     private void Awake()
     {
-        //TODO - Dict ∞™ ¿⁄µø º≥¡§¿∏∑Œ ∫Ø∞Ê
+        //TODO - Dict Í∞í ÏûêÎèô ÏÑ§Ï†ïÏúºÎ°ú Î≥ÄÍ≤Ω
         eventDict = new Dictionary<EventType, UnityEvent>()
         {
             {EventType.JOIN_GAME, JoinGame },
             //{EventType.EXIT_GAME, ExitGame },
             {EventType.START_RACE, StartRace },
             {EventType.END_RACE, EndRace },
-            {EventType.ADD_PLAYER, AddPlayer }
+            {EventType.ADD_PLAYER, AddPlayer },
+            {EventType.UPDATE_RANK,UpdateRank}
         };
     }
 

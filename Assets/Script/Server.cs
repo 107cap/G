@@ -241,6 +241,14 @@ public class Server : MonoBehaviour
                 EndPacket pac = packet as EndPacket;
                 isAllEnd[pac.clientNum] = pac.isEnd;
 
+                if (isEnd == false)
+                {
+                    EventPacket rankPacket = new EventPacket();
+                    rankPacket.clientNum = pac.clientNum;
+                    rankPacket.eventType = EventType.UPDATE_RANK;
+                    sendQue.Enqueue((IPacket)rankPacket);
+                }
+
                 if (checkAllEnd() && isEnd == false)
                 {
                     isEnd = true;

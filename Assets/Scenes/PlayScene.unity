@@ -647,7 +647,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1825723894}
   - {fileID: 229238047}
   - {fileID: 1556726156}
   m_Father: {fileID: 421504587}
@@ -708,7 +707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18039216, g: 0.1764706, b: 0.1764706, a: 1}
+  m_Color: {r: 0.18039216, g: 0.1764706, b: 0.1764706, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -803,7 +802,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB3D9\uD574\uBB3C\uACFC\uBC31\uB450\uC0B0\uC774"
+  m_Text: "\uD50C\uB808\uC774\uC5B4 01"
 --- !u!222 &428144079
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1119,7 +1118,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB3D9\uD574\uBB3C\uACFC\uBC31\uB450\uC0B0\uC774"
+  m_Text: "\uD50C\uB808\uC774\uC5B4 02"
 --- !u!222 &752767462
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1393,7 +1392,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18039216, g: 0.1764706, b: 0.1764706, a: 1}
+  m_Color: {r: 0.18039216, g: 0.1764706, b: 0.1764706, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2084,6 +2083,11 @@ MonoBehaviour:
   Ready: {fileID: 111261658}
   ReadyText: {fileID: 983380892}
   raceTime: {fileID: 1374171055}
+  rankUIText:
+  - {fileID: 428144078}
+  - {fileID: 752767461}
+  - {fileID: 1422392241}
+  - {fileID: 1920401354}
 --- !u!4 &1339720234
 Transform:
   m_ObjectHideFlags: 0
@@ -2327,7 +2331,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB3D9\uD574\uBB3C\uACFC\uBC31\uB450\uC0B0\uC774"
+  m_Text: "\uD50C\uB808\uC774\uC5B4 03"
 --- !u!222 &1422392242
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2619,81 +2623,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7909474585135120499, guid: 96a08fe8656b2ff49ad4fc6d423c1905, type: 3}
   m_PrefabInstance: {fileID: 1773743054}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1825723893
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1825723894}
-  - component: {fileID: 1825723896}
-  - component: {fileID: 1825723895}
-  m_Layer: 7
-  m_Name: Arrow
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1825723894
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825723893}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 344019416}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -35, y: 390}
-  m_SizeDelta: {x: 16, y: 18.87}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1825723895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825723893}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8a34846ae68870c41bd212d0b6c53a4f, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1825723896
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825723893}
-  m_CullTransparentMesh: 1
 --- !u!1 &1835570582
 GameObject:
   m_ObjectHideFlags: 0
@@ -2887,7 +2816,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB3D9\uD574\uBB3C\uACFC\uBC31\uB450\uC0B0\uC774"
+  m_Text: "\uD50C\uB808\uC774\uC5B4 04"
 --- !u!222 &1920401355
 CanvasRenderer:
   m_ObjectHideFlags: 0
