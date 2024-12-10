@@ -17,11 +17,14 @@ public class UIManager : MonoBehaviour
     private DateTime startTime;
     bool start = false;
 
+    [Header("KMJ")]
+    public Text[] rankUIText;
 
     // Start is called before the first frame update
     void Start()
     {
         GameManager.Instance.eventManager.Register(EventType.START_RACE, StartCount);
+        GameManager.Instance.eventManager.Register(EventType.UPDATE_RANK, RankUIUpdate);
 
         // 시작시 체크/X 버튼 초기화, isReady = false
         //isReady = false;
@@ -34,6 +37,10 @@ public class UIManager : MonoBehaviour
         //ReadyText = Ready.GetComponent<TMP_Text>();
         //raceTime = GameObject.Find("raceTime").GetComponent<Text>();
         
+        for(int i=0;i<4;i++)
+        {
+            rankUIText[i].text = "";
+        }
     }
 
     public bool getisReady()
@@ -104,5 +111,17 @@ public class UIManager : MonoBehaviour
             raceTime.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
         }
         
+    }
+
+    public void RankUIUpdate()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (rankUIText[i].text == "")
+            {
+                rankUIText[i].text = ($"{GameManager.Instance.eventPacket.clientNum + 1}번 플레이어");
+                return;
+            }
+        }
     }
 }

@@ -1301,6 +1301,9 @@ MonoBehaviour:
   AddPlayer:
     m_PersistentCalls:
       m_Calls: []
+  UpdateRank:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &726703425
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,7 +1467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0a22f218913334aadc9357cf38cacb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxClientNum: 2
+  maxClientNum: 1
 --- !u!4 &787145230
 Transform:
   m_ObjectHideFlags: 0

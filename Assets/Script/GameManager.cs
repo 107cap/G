@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     //패킷 캐싱
     IPacket tmpPacket;
-    EventPacket eventPacket;
+    public EventPacket eventPacket;
     PlayerPacket playerPacket;
     //AddPlayerPacket addPlayerPacket;
 

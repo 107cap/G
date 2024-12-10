@@ -16,7 +16,8 @@ public enum EventType
     //EXIT_GAME = 2,
     START_RACE = 3,
     END_RACE = 4,
-    ADD_PLAYER = 5
+    ADD_PLAYER = 5,
+    UPDATE_RANK=6
 }
 
 public enum PacketType
