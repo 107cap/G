@@ -124,7 +124,9 @@ public class UIManager : MonoBehaviour
         {
             if (rankUIText[i].text == "")
             {
-                rankUIText[i].text = ($"{GameManager.Instance.eventPacket.clientNum + 1}번 플레이어");
+                string playerName;
+                GameManager.Instance.playerNames.TryGetValue(GameManager.Instance.eventPacket.clientNum, out playerName);
+                rankUIText[i].text = playerName;
                 return;
             }
         }
