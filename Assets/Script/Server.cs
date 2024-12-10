@@ -28,7 +28,7 @@ public class Server : MonoBehaviour
     bool isready = false;
     bool isEnd = false;
     bool[] isAllEnd;
-    int maxClientNum = 1;
+    int maxClientNum = 4;
 
     bool[] isreadyPlayers;
     // 서버 딕셔너리 (recrive que 삭제)
